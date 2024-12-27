@@ -42,3 +42,6 @@ func _physics_process(delta: float) -> void:
 
 func _on_coin_body_entered(_body: Node2D) -> void:
 	pass # Replace with function body.
+
+func _ready():
+	add_to_group("player")

@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3 uid="uid://cla18fx32rot5"]
+[gd_scene load_steps=22 format=3 uid="uid://cla18fx32rot5"]
 
 [ext_resource type="PackedScene" uid="uid://b4r4qhmasmabq" path="res://scenes/player.tscn" id="1_amh3c"]
 [ext_resource type="PackedScene" uid="uid://rwioaa6b1l66" path="res://scenes/killzone.tscn" id="3_2aom3"]
@@ -11,7 +11,6 @@
 [ext_resource type="Texture2D" uid="uid://cjpmf5rnjcw40" path="res://assets/sprites/neighborhood/dirt.png" id="9_pp1o4"]
 [ext_resource type="PackedScene" uid="uid://dijubl4kxp0u0" path="res://scenes/trash.tscn" id="10_21isw"]
 [ext_resource type="PackedScene" uid="uid://cbt4hlv6p03o6" path="res://scenes/truck.tscn" id="11_uww0r"]
-[ext_resource type="PackedScene" uid="uid://cvpkttunkn2nj" path="res://interaction/interaction area/interaction_area.tscn" id="12_o0uvv"]
 
 [sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_r8mjf"]
 
@@ -505,9 +504,6 @@ sources/0 = SubResource("TileSetAtlasSource_00efg")
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_b2cdi"]
 size = Vector2(20, 360)
 
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_7vmwg"]
-height = 50.0
-
 [node name="Game" type="Node2D"]
 
 [node name="Player" parent="." instance=ExtResource("1_amh3c")]
@@ -532,10 +528,10 @@ shape = SubResource("WorldBoundaryShape2D_r8mjf")
 [node name="Coins" type="Node" parent="."]
 
 [node name="coin" parent="Coins" instance=ExtResource("4_3t0xg")]
-position = Vector2(431, -136)
+position = Vector2(217, -36)
 
 [node name="coin2" parent="Coins" instance=ExtResource("4_3t0xg")]
-position = Vector2(491, -131)
+position = Vector2(250, -51)
 
 [node name="Platform" type="Node" parent="."]
 
@@ -567,24 +563,18 @@ layer_0/tile_data = PackedInt32Array(-655365, 0, 0, -589829, 0, 1, -524293, 0, 2
 [node name="Trash" parent="." instance=ExtResource("10_21isw")]
 position = Vector2(88, 9)
 
-[node name="Borders" type="StaticBody2D" parent="."]
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Borders"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
 position = Vector2(-90, -12)
 shape = SubResource("RectangleShape2D_b2cdi")
 
 [node name="Truck" parent="." instance=ExtResource("11_uww0r")]
-position = Vector2(373, -21)
-
-[node name="InteractionArea" parent="." instance=ExtResource("12_o0uvv")]
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="InteractionArea"]
-position = Vector2(183, -2)
-shape = SubResource("CapsuleShape2D_7vmwg")
-
-[node name="Scene2DialogueBox" type="Label" parent="."]
-offset_right = 40.0
-offset_bottom = 23.0
+position = Vector2(264, -20)
+move_speed = 100.0
+max_flee_distance = 300.0
+return_speed = 50.0
+detection_radius = 150.0
 
 [connection signal="child_entered_tree" from="." to="Player" method="_on_game_child_entered_tree"]
 [connection signal="body_entered" from="Coins/coin" to="Coins/coin" method="_on_body_entered"]

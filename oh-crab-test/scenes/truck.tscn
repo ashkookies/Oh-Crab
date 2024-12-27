@@ -1,0 +1,41 @@
+[gd_scene load_steps=6 format=3 uid="uid://cbt4hlv6p03o6"]
+
+[ext_resource type="Script" path="res://scripts/truck.gd" id="1_ooryt"]
+[ext_resource type="Texture2D" uid="uid://qm05gqoinvhu" path="res://assets/sprites/neighborhood/Truck.png" id="2_pgikl"]
+[ext_resource type="PackedScene" uid="uid://cvpkttunkn2nj" path="res://interaction/interaction area/interaction_area.tscn" id="3_g5nek"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_bke0x"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_pgikl")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_pgikl")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_pgikl")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ooiw2"]
+size = Vector2(216, 76)
+
+[node name="Truck" type="Node2D"]
+script = ExtResource("1_ooryt")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_bke0x")
+
+[node name="InteractionArea" parent="." instance=ExtResource("3_g5nek")]
+position = Vector2(-1.15977, 184.072)
+collision_layer = 3
+collision_mask = 1
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="InteractionArea"]
+light_mask = 3
+position = Vector2(-34.8402, -184.072)
+shape = SubResource("RectangleShape2D_ooiw2")
