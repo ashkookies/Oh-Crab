@@ -1,14 +1,13 @@
-[gd_scene load_steps=19 format=3 uid="uid://d1l7xqy72wpog"]
+[gd_scene load_steps=18 format=3 uid="uid://d1l7xqy72wpog"]
 
 [ext_resource type="PackedScene" uid="uid://b4r4qhmasmabq" path="res://scenes/player.tscn" id="1_23thr"]
-[ext_resource type="PackedScene" uid="uid://b1ius7uo2kdpq" path="res://scenes/platform_2.tscn" id="2_cnq72"]
 [ext_resource type="Texture2D" uid="uid://bmgb356oqpgg1" path="res://assets/sprites/world_tileset.png" id="2_g0dqc"]
 [ext_resource type="PackedScene" uid="uid://bf4vwoyfbwkn8" path="res://scenes/platform.tscn" id="2_nayqh"]
 [ext_resource type="PackedScene" uid="uid://dalnbjfrpktnr" path="res://scenes/coin.tscn" id="4_n5jbu"]
 [ext_resource type="PackedScene" uid="uid://rwioaa6b1l66" path="res://scenes/killzone.tscn" id="5_tve7y"]
 [ext_resource type="PackedScene" uid="uid://ciew4lsb7lr5k" path="res://scenes/slime.tscn" id="6_qq4w1"]
 [ext_resource type="Texture2D" uid="uid://j3ig2adohgrc" path="res://assets/sprites/TX Village Props.png" id="7_p7pgb"]
-[ext_resource type="PackedScene" uid="uid://bx2ohucwmmf3t" path="res://scenes/crab_idle.tscn" id="7_son1f"]
+[ext_resource type="PackedScene" path="res://scenes/crab_idle.tscn" id="7_son1f"]
 [ext_resource type="PackedScene" uid="uid://f2p3ed5xba1r" path="res://scripts/textbox.tscn" id="8_mqb5p"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_s8dms"]

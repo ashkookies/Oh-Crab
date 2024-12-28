@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://cla18fx32rot5"]
+[gd_scene load_steps=19 format=3 uid="uid://cla18fx32rot5"]
 
 [ext_resource type="PackedScene" uid="uid://b4r4qhmasmabq" path="res://scenes/player.tscn" id="1_amh3c"]
 [ext_resource type="Script" path="res://scripts/neighborhood.gd" id="1_kyrof"]
@@ -400,11 +400,17 @@ size = Vector2(20, 360)
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_7vmwg"]
 height = 50.0
 
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_hmyhm"]
+height = 50.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_iaxso"]
+size = Vector2(9, 263)
+
 [node name="Neighborhood" type="Node2D"]
 script = ExtResource("1_kyrof")
 
 [node name="Player" parent="." instance=ExtResource("1_amh3c")]
-position = Vector2(-24, 14)
+position = Vector2(9, 18)
 collision_layer = 3
 
 [node name="Camera2D" type="Camera2D" parent="Player"]
@@ -439,16 +445,28 @@ position = Vector2(88, 9)
 [node name="Truck" parent="." instance=ExtResource("11_uww0r")]
 position = Vector2(373, -21)
 
-[node name="InteractionArea" parent="." instance=ExtResource("12_o0uvv")]
+[node name="Scene2" parent="." instance=ExtResource("12_o0uvv")]
 position = Vector2(0, 150)
 collision_layer = 3
 collision_mask = 3
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="InteractionArea"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Scene2"]
 light_mask = 3
 position = Vector2(180, -157)
 shape = SubResource("CapsuleShape2D_7vmwg")
 
 [node name="Dialogue" parent="." instance=ExtResource("14_a0osj")]
+
+[node name="Scene3" parent="." instance=ExtResource("12_o0uvv")]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Scene3"]
+position = Vector2(-24, -8)
+shape = SubResource("CapsuleShape2D_hmyhm")
+
+[node name="Barrier" type="StaticBody2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Barrier"]
+position = Vector2(197.5, -36.5)
+shape = SubResource("RectangleShape2D_iaxso")
 
 [connection signal="child_entered_tree" from="." to="Player" method="_on_game_child_entered_tree"]
