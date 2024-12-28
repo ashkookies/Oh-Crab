@@ -1,6 +1,6 @@
-[gd_scene load_steps=4 format=3 uid="uid://f2p3ed5xba1r"]
+[gd_scene load_steps=4 format=3 uid="uid://jyxkmjclblfm"]
 
-[ext_resource type="Script" path="res://scripts/textbox.gd" id="1_q52eg"]
+[ext_resource type="Script" path="res://scripts/neighborhood/scene_2.gd" id="1_xq32m"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ku1e5"]
 bg_color = Color(0.242613, 0.127583, 0.0235908, 1)
@@ -15,8 +15,8 @@ font_names = PackedStringArray("Comic Sans MS")
 font_weight = 625
 subpixel_positioning = 0
 
-[node name="Textbox" type="CanvasLayer"]
-script = ExtResource("1_q52eg")
+[node name="Scene2" type="CanvasLayer"]
+script = ExtResource("1_xq32m")
 
 [node name="TextboxContainer" type="MarginContainer" parent="."]
 anchors_preset = 12
@@ -64,7 +64,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 0
 theme_override_fonts/font = SubResource("SystemFont_nqged")
 theme_override_font_sizes/font_size = 25
-text = "The quick brown fox jumps over the lazy dog"
+text = "Testing"
 autowrap_mode = 2
 
 [node name="End" type="Label" parent="TextboxContainer/MarginContainer/HBoxContainer"]

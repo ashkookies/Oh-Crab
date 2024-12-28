@@ -1,0 +1,23 @@
+[gd_scene load_steps=5 format=3 uid="uid://dijubl4kxp0u0"]
+
+[ext_resource type="Texture2D" uid="uid://c7nyqm0dfdtga" path="res://assets/sprites/neighborhood/Trash.png" id="1_u72b7"]
+[ext_resource type="Script" path="res://scenes/trash.gd" id="1_yip0f"]
+[ext_resource type="PackedScene" uid="uid://cvpkttunkn2nj" path="res://interaction/interaction area/interaction_area.tscn" id="2_om6g2"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_w8cid"]
+
+[node name="Trash" type="Node2D"]
+script = ExtResource("1_yip0f")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_u72b7")
+
+[node name="InteractionArea" parent="." instance=ExtResource("2_om6g2")]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="InteractionArea"]
+shape = SubResource("CircleShape2D_w8cid")
+
+[node name="MessageLabel" type="Label" parent="."]
+offset_right = 40.0
+offset_bottom = 23.0
+text = "[F] to pick up"

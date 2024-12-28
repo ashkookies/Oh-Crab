@@ -1,3 +1,5 @@
+#player.gd
+
 extends CharacterBody2D
 
 @onready var animated_sprite = $AnimatedSprite2D
@@ -42,3 +44,6 @@ func _physics_process(delta: float) -> void:
 
 func _on_coin_body_entered(_body: Node2D) -> void:
 	pass # Replace with function body.
+
+func _ready():
+	add_to_group("player")
