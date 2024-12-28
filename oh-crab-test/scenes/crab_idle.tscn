@@ -1,0 +1,66 @@
+[gd_scene load_steps=10 format=3 uid="uid://bx2ohucwmmf3t"]
+
+[ext_resource type="Texture2D" uid="uid://elhdekoiaxw3" path="res://assets/sprites/Hermit Crab Sprite Sheet.png" id="1_1xmo6"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_g65hx"]
+atlas = ExtResource("1_1xmo6")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_auwdp"]
+atlas = ExtResource("1_1xmo6")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ebdcr"]
+atlas = ExtResource("1_1xmo6")
+region = Rect2(64, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1ruld"]
+atlas = ExtResource("1_1xmo6")
+region = Rect2(96, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pkw4x"]
+atlas = ExtResource("1_1xmo6")
+region = Rect2(128, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_flm3f"]
+atlas = ExtResource("1_1xmo6")
+region = Rect2(160, 0, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_1alrj"]
+animations = [{
+"frames": [{
+"duration": 2.2,
+"texture": SubResource("AtlasTexture_g65hx")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_auwdp")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ebdcr")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1ruld")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pkw4x")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_flm3f")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_inj63"]
+size = Vector2(17, 8)
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D"]
+position = Vector2(0, -16)
+sprite_frames = SubResource("SpriteFrames_1alrj")
+autoplay = "default"
+frame_progress = 0.684896
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0.5, 11)
+shape = SubResource("RectangleShape2D_inj63")

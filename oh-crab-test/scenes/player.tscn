@@ -148,11 +148,13 @@ z_index = 5
 script = ExtResource("1_dic3n")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
-position = Vector2(0, -12)
+z_index = 5
+position = Vector2(0, -16)
 sprite_frames = SubResource("SpriteFrames_xoxfn")
 animation = &"idle"
 autoplay = "idle"
+frame_progress = 0.845848
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(0, -12)
+position = Vector2(0, -15)
 shape = SubResource("RectangleShape2D_tpcyh")

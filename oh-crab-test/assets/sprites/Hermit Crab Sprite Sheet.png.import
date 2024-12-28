@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://57lgog0m01j6"
-path="res://.godot/imported/slime_green.png-f6349164bf3a0f5189bb927b97af9c58.ctex"
+uid="uid://elhdekoiaxw3"
+path="res://.godot/imported/Hermit Crab Sprite Sheet.png-17df5d08a04abceb35e90d1cdde60492.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/slime_green.png"
-dest_files=["res://.godot/imported/slime_green.png-f6349164bf3a0f5189bb927b97af9c58.ctex"]
+source_file="res://assets/sprites/Hermit Crab Sprite Sheet.png"
+dest_files=["res://.godot/imported/Hermit Crab Sprite Sheet.png-17df5d08a04abceb35e90d1cdde60492.ctex"]
 
 [params]
 
