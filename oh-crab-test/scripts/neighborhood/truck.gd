@@ -1,3 +1,5 @@
+#truck.gd
+
 extends Node2D
 
 @export var base_speed: float = 500.0  # Speed when the truck starts moving

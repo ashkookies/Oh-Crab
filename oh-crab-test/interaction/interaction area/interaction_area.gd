@@ -1,3 +1,4 @@
+#interaction_area.gd
 extends Area2D
 class_name InteractionArea
 
