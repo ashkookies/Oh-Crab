@@ -6,7 +6,7 @@ extends Node2D
 @onready var player = $Player
 @onready var truck = $Truck
 @onready var barrier = $Barrier
-@onready var barrier_area = $Barrier/CollisionArea  # New Area2D node
+@onready var barrier_area = $Barrier/CollisionArea
 
 var player_can_move = true
 var dialogue_active = false
@@ -16,8 +16,8 @@ var is_truck_leaving = false
 var dialogue_step = 0
 var current_scene = 0
 var barrier_dialogue_cooldown = false
+var waiting_for_timer = false
 
-# New variables for truck movement
 var truck_target_x = 500
 var truck_initial_x = 0
 
@@ -29,14 +29,9 @@ func _ready():
 	if truck:
 		truck_initial_x = truck.position.x
 	
-	# Initially hide the barrier
 	if barrier:
 		barrier.visible = false
 		barrier.set_deferred("disabled", true)
-	
-	# Connect the Area2D signal
-	if barrier_area:
-		barrier_area.body_entered.connect(_on_barrier_area_entered)
 	
 	await get_tree().create_timer(0.1).timeout
 	
@@ -45,26 +40,21 @@ func _ready():
 	if interaction_area_3:
 		interaction_area_3.on_interaction = func(): on_interaction_scene3()
 
-# Updated function name to match the Area2D
-func _on_barrier_area_entered(body):
-	if body == player and not barrier_dialogue_cooldown:
-		show_barrier_dialogue()
-		barrier_dialogue_cooldown = true
-		# Reset cooldown after 2 seconds to prevent spam
-		await get_tree().create_timer(2.0).timeout
-		barrier_dialogue_cooldown = false
+func _input(event):
+	if dialogue_active and event.is_action_pressed("ui_accept"):
+		print("DEBUG: Dialog advance triggered. Current step: ", dialogue_step)
+		if not waiting_for_timer:
+			end_dialogue()
+			get_viewport().set_input_as_handled()
 
-func show_barrier_dialogue():
-	var dialogue_messages = [
-		"I can't go this way, the truck already left!",
-		"There must be another way...",
-		"Mom's going to be so mad if I don't catch up to that truck!"
-	]
-	# Randomly select one of the messages
-	var random_message = dialogue_messages[randi() % dialogue_messages.size()]
-	dialogue_ui.trigger_dialogue(random_message)
-	await get_tree().create_timer(2.0).timeout
-	dialogue_ui.hide_dialogue()
+func _on_barrier_area_entered(body):
+	print("DEBUG: Barrier collision detected with:", body.name if body else "null")
+	if body == player and dialogue_ui:
+		print("DEBUG: Showing barrier dialogue")
+		dialogue_ui.trigger_dialogue("I should go back home.")
+		# Hide dialogue after 2 seconds
+		await get_tree().create_timer(2.0).timeout
+		dialogue_ui.hide_dialogue()
 
 func _physics_process(delta):
 	if is_truck_leaving and truck:
@@ -80,20 +70,24 @@ func activate_barrier():
 		print("DEBUG: ACTIVATING barrier - Scene:", current_scene, " Step:", dialogue_step)
 		barrier.visible = true
 		barrier.set_deferred("disabled", false)
+		
+		if barrier_area:
+			if barrier_area.body_entered.is_connected(_on_barrier_area_entered):
+				barrier_area.body_entered.disconnect(_on_barrier_area_entered)
+			barrier_area.body_entered.connect(_on_barrier_area_entered)
+			print("DEBUG: Barrier collision signal connected")
 	else:
 		print("DEBUG: Failed to activate barrier - barrier node is null")
 
 func deactivate_barrier():
 	if barrier:
 		print("DEBUG: DEACTIVATING barrier - Scene:", current_scene, " Step:", dialogue_step)
-		# Force all possible ways to disable the barrier
 		barrier.visible = false
 		barrier.process_mode = Node.PROCESS_MODE_DISABLED
 		barrier.set_deferred("disabled", true)
 		barrier.set_deferred("collision_layer", 0)
 		barrier.set_deferred("collision_mask", 0)
 		
-		# Print barrier properties to verify changes
 		print("DEBUG: Barrier properties after deactivation:")
 		print("- visible:", barrier.visible)
 		print("- process_mode:", barrier.process_mode)
@@ -101,13 +95,6 @@ func deactivate_barrier():
 		print("- collision_mask:", barrier.collision_mask)
 	else:
 		print("DEBUG: Failed to deactivate barrier - barrier node is null")
-
-func _input(event):
-	if dialogue_active or (current_scene == 2 and dialogue_step == 5) or (current_scene == 3 and dialogue_step == 4):
-		if event.is_action_pressed("ui_accept"):
-			print("DEBUG: Dialog advance triggered. Current step: ", dialogue_step)
-			end_dialogue()
-			get_viewport().set_input_as_handled()
 
 func on_interaction_scene2():
 	if not has_triggered_scene2:
@@ -140,17 +127,33 @@ func show_next_dialogue():
 		match dialogue_step:
 			0:
 				dialogue_ui.trigger_dialogue("(There's the truck!!)")
+				waiting_for_timer = false
 			1:
 				dialogue_ui.trigger_dialogue("Hey!! I still have some trash here!")
+				waiting_for_timer = true
+				var timer = get_tree().create_timer(1.5)
+				await timer.timeout
+				waiting_for_timer = false
+				dialogue_step += 1
+				show_next_dialogue()
 			2:
 				print("DEBUG: Reached final dialogue step")
 				start_truck_movement()
+				waiting_for_timer = true
+				var timer = get_tree().create_timer(1.5)
+				await timer.timeout
+				waiting_for_timer = false
+				dialogue_step += 1
+				show_next_dialogue()
 			3:
 				dialogue_ui.trigger_dialogue("NOOOOO! Mom is gonna kill me T-T")
+				waiting_for_timer = false
 			4:
 				dialogue_ui.trigger_dialogue("(I should just go back home)")
-			5:
+				waiting_for_timer = false
+				dialogue_step += 1
 				return
+	
 	elif current_scene == 3:
 		match dialogue_step:
 			0:
@@ -161,12 +164,9 @@ func show_next_dialogue():
 				dialogue_ui.trigger_dialogue("OKAY CHILL!!!!")
 			3:
 				dialogue_ui.trigger_dialogue("Ugh, what a way to start my morning")
-				# Deactivate barrier before the last dialogue step
 				deactivate_barrier()
-			4:
+			_:
 				return
-	
-	dialogue_step += 1
 
 func start_truck_movement():
 	print("DEBUG: start_truck_movement called")
@@ -183,13 +183,10 @@ func end_dialogue():
 	var max_steps = 5 if current_scene == 2 else 4
 	
 	if dialogue_step < max_steps:
-		print("DEBUG: Moving to next dialogue")
+		dialogue_step += 1
 		show_next_dialogue()
 	else:
-		if current_scene == 2:
-			start_truck_movement()
-		
-		# Make sure barrier is deactivated at the end of scene 3
+		dialogue_ui.hide_dialogue()
 		if current_scene == 3:
 			print("DEBUG: Final check - deactivating barrier")
 			deactivate_barrier()
@@ -197,6 +194,7 @@ func end_dialogue():
 		print("DEBUG: Dialogue complete, enabling player movement")
 		player_can_move = true
 		dialogue_active = false
-		await get_tree().create_timer(0.1).timeout
+		var timer = get_tree().create_timer(0.1)
+		await timer.timeout
 		if player and player.has_method("set_can_move"):
 			player.set_can_move(true)
