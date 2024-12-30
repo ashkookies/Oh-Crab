@@ -2,10 +2,10 @@ extends CharacterBody2D
 
 @onready var animated_sprite = $AnimatedSprite2D
 
-const SPEED = 60.0
-const JUMP_VELOCITY = -300.0
-const LADDER_CLIMB_SPEED = 60.0
-const LADDER_MOVE_SPEED = 40.0
+const SPEED = 30.0
+const JUMP_VELOCITY = -200.0
+const LADDER_CLIMB_SPEED = 30.0
+const LADDER_MOVE_SPEED = 30.0
 
 var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
 var can_move = true
@@ -13,30 +13,24 @@ var near_ladder = false
 var on_ladder = false
 var at_ladder_top = false
 
-# Add this debug function
-func _print_states(label: String = ""):
-	print(label, " near_ladder: ", near_ladder, " on_ladder: ", on_ladder, 
-		  " at_ladder_top: ", at_ladder_top, " pos_y: ", global_position.y)
-
 func _physics_process(delta: float) -> void:
 	# Clear ladder states if not near a ladder
 	if not near_ladder:
 		on_ladder = false
 		at_ladder_top = false
+		enable_gravity()
 	
 	# Handle ladder entry/exit
 	if near_ladder:
 		if Input.is_action_just_pressed("ui_up"):
 			if not at_ladder_top:  # Only enter ladder mode if not at top
 				on_ladder = true
-				_print_states("Entering ladder from up")
 		elif Input.is_action_just_pressed("ui_down"):
 			if at_ladder_top or is_on_floor():
 				on_ladder = true
 				at_ladder_top = false
-				_print_states("Entering ladder from down")
 	
-	# Handle gravity
+	  # Handle gravity
 	if not on_ladder and not at_ladder_top:
 		if not is_on_floor():
 			velocity.y += gravity * delta
@@ -44,12 +38,61 @@ func _physics_process(delta: float) -> void:
 	if can_move:
 		var direction := Input.get_axis("ui_left", "ui_right")
 		
-		# Check for pressing down while at ladder top
-		if at_ladder_top and Input.is_action_pressed("ui_down"):
-			at_ladder_top = false
-			on_ladder = true
-			velocity.y = LADDER_CLIMB_SPEED
-			_print_states("Starting climb down from top")
+		# Handle standing on top of the ladder
+		if at_ladder_top:
+			velocity.y = 0  # Stay at the top
+			
+			if Input.is_action_just_pressed("ui_down"):
+				at_ladder_top = false
+				on_ladder = true
+				velocity.y = LADDER_CLIMB_SPEED
+			
+			# Simplified movement at top
+			velocity.x = direction * SPEED
+			if direction != 0:
+				if direction > 0:
+					animated_sprite.play("walk_right")
+				else:
+					animated_sprite.play("walk_left")
+			else:
+				animated_sprite.play("idle")
+				velocity.x = 0
+				
+			if Input.is_action_just_pressed("ui_accept"):
+				at_ladder_top = false
+				velocity.y = JUMP_VELOCITY
+				enable_gravity()
+		
+		# Regular ladder climbing logic
+		elif on_ladder:
+			velocity.y = 0  # Reset vertical velocity by default
+			
+			if Input.is_action_pressed("ui_up"):
+				velocity.y = -LADDER_CLIMB_SPEED
+				#animated_sprite.play("climb")
+			elif Input.is_action_pressed("ui_down"):
+				velocity.y = LADDER_CLIMB_SPEED
+				#animated_sprite.play("climb")
+			else:
+				animated_sprite.play("idle")
+			
+			velocity.x = direction * LADDER_MOVE_SPEED
+		
+		# Normal movement logic
+		else:
+			if Input.is_action_just_pressed("ui_accept") and is_on_floor():
+				velocity.y = JUMP_VELOCITY
+			
+			velocity.x = direction * SPEED
+			if velocity.x == 0:
+				animated_sprite.play("idle")
+			else:
+				if velocity.x > 0:
+					animated_sprite.play("walk_right")
+				else:
+					animated_sprite.play("walk_left")
+	
+		move_and_slide()
 		
 		if on_ladder:
 			# Reset vertical velocity when starting ladder movement
@@ -60,16 +103,14 @@ func _physics_process(delta: float) -> void:
 			if Input.is_action_pressed("ui_up"):
 				if not at_ladder_top:
 					velocity.y = -LADDER_CLIMB_SPEED
-					animated_sprite.play("climb")
-					_print_states("Climbing up")
+					#animated_sprite.play("climb")
 				else:
 					velocity.y = 0
 					on_ladder = false
 			elif Input.is_action_pressed("ui_down"):
 				velocity.y = LADDER_CLIMB_SPEED
 				at_ladder_top = false
-				animated_sprite.play("climb")
-				_print_states("Climbing down")
+				#animated_sprite.play("climb")
 			else:
 				velocity.y = 0
 				animated_sprite.play("idle")

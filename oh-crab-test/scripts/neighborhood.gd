@@ -6,15 +6,15 @@ extends Node2D
 @onready var player = $Player
 @onready var truck = $Truck
 @onready var barrier = $Barrier
-@onready var barrier_area = $Barrier/CollisionArea
+@onready var barrier_area = $Barrier/CollisionShape2D
 
-var player_can_move = true
+var player_can_move = false  # Changed to start false
 var dialogue_active = false
 var has_triggered_scene2 = false
 var has_triggered_scene3 = false
 var is_truck_leaving = false
 var dialogue_step = 0
-var current_scene = 0
+var current_scene = 1  # Start with intro scene
 var barrier_dialogue_cooldown = false
 var waiting_for_timer = false
 
@@ -23,8 +23,16 @@ var truck_initial_x = 0
 
 func _ready():
 	print("DEBUG: _ready called")
+	current_scene = 1
+	player_can_move = false
+	dialogue_active = true
+	dialogue_step = 0
+	
+	if player and player.has_method("set_can_move"):
+		player.set_can_move(false)
+	
 	if dialogue_ui:
-		dialogue_ui.hide_dialogue()
+		show_intro_dialogue()
 	
 	if truck:
 		truck_initial_x = truck.position.x
@@ -33,18 +41,42 @@ func _ready():
 		barrier.visible = false
 		barrier.set_deferred("disabled", true)
 	
-	await get_tree().create_timer(0.1).timeout
-	
 	if interaction_area_2:
 		interaction_area_2.on_interaction = func(): on_interaction_scene2()
 	if interaction_area_3:
 		interaction_area_3.on_interaction = func(): on_interaction_scene3()
 
+func show_intro_dialogue():
+	if dialogue_ui:
+		match dialogue_step:
+			0:
+				dialogue_ui.trigger_dialogue("Oh no! I forgot to take out the trash!")
+			1:
+				dialogue_ui.trigger_dialogue("The truck should be here any minute now...")
+			2:
+				dialogue_ui.trigger_dialogue("I better hurry!")
+			_:
+				end_intro_dialogue()
+				return
+
+func end_intro_dialogue():
+	dialogue_ui.hide_dialogue()
+	player_can_move = true
+	dialogue_active = false
+	current_scene = 0
+	dialogue_step = 0
+	if player and player.has_method("set_can_move"):
+		player.set_can_move(true)
+
+
 func _input(event):
 	if dialogue_active and event.is_action_pressed("ui_accept"):
-		print("DEBUG: Dialog advance triggered. Current step: ", dialogue_step)
 		if not waiting_for_timer:
-			end_dialogue()
+			if current_scene == 1:
+				dialogue_step += 1
+				show_intro_dialogue()
+			else:
+				end_dialogue()
 			get_viewport().set_input_as_handled()
 
 func _on_barrier_area_entered(body):

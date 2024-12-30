@@ -14,20 +14,20 @@ func _on_body_entered(body: Node2D) -> void:
 		# Check if player is entering through the top area
 		var top_area_position = top_area.global_position
 		var top_area_extents = top_area.shape.extents if top_area.shape is RectangleShape2D else Vector2.ZERO
+		
+		# If entering from above or at the top area
 		if body.global_position.y <= top_area_position.y + top_area_extents.y:
 			body.at_ladder_top = true
-			body.on_ladder = false  # Force off ladder state when at top
-			body.disable_gravity()
-			print("Entered top area - pos_y: ", body.global_position.y, " top_y: ", top_area_position.y)
+			body.on_ladder = false
+			body.velocity.y = 0
+			# We'll position the player exactly at the top
+			body.global_position.y = top_area_position.y
 
 func _on_body_exited(body: Node2D) -> void:
 	if body.is_in_group("player"):
-		print("Exiting ladder area - was_at_top: ", body.at_ladder_top, " was_on_ladder: ", body.on_ladder)
 		body.near_ladder = false
 		
-		# Only keep at_ladder_top true if they're actually at the top position
-		var top_area_position = top_area.global_position
-		var top_area_extents = top_area.shape.extents if top_area.shape is RectangleShape2D else Vector2.ZERO
-		if body.global_position.y > top_area_position.y + top_area_extents.y:
+		# Keep at_ladder_top true if they're moving horizontally at the top
+		if body.global_position.y > top_area.global_position.y + 10:
 			body.at_ladder_top = false
 			body.enable_gravity()
