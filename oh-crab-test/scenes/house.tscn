@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=3 uid="uid://cla18fx32rot5"]
+[gd_scene load_steps=26 format=3 uid="uid://cla18fx32rot5"]
 
 [ext_resource type="Script" path="res://scripts/neighborhood.gd" id="1_twxuo"]
 [ext_resource type="PackedScene" uid="uid://b4r4qhmasmabq" path="res://scenes/player.tscn" id="2_lfrv6"]
@@ -1246,6 +1246,9 @@ height = 50.0
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_iaxso"]
 size = Vector2(9, 263)
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_4blcr"]
+size = Vector2(9, 263)
+
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_kqxlc"]
 height = 50.0
 
@@ -1259,7 +1262,7 @@ size = Vector2(16, 16)
 script = ExtResource("1_twxuo")
 
 [node name="Player" parent="." instance=ExtResource("2_lfrv6")]
-position = Vector2(-82, -78)
+position = Vector2(120, 18)
 collision_layer = 3
 
 [node name="Camera2D" type="Camera2D" parent="Player"]
@@ -1322,6 +1325,12 @@ shape = SubResource("CapsuleShape2D_hmyhm")
 [node name="CollisionArea" type="CollisionShape2D" parent="Barrier"]
 position = Vector2(197.5, -36.5)
 shape = SubResource("RectangleShape2D_iaxso")
+
+[node name="DetectorArea" type="Area2D" parent="Barrier"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Barrier/DetectorArea"]
+position = Vector2(197.5, -37.5)
+shape = SubResource("RectangleShape2D_4blcr")
 
 [node name="NeighborhoodTransition" parent="." instance=ExtResource("8_48tf7")]
 

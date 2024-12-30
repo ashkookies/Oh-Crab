@@ -1,4 +1,3 @@
-# Scene2.gd (DialogueUI.gd)
 extends CanvasLayer
 
 @onready var textbox_container = $TextboxContainer
@@ -18,12 +17,12 @@ func _ready():
 	# Force hide at start
 	textbox_container.hide()
 	dialogue_active = false
-	_reset_dialogue_state()
+	reset_dialogue_state()
 	
 	if text_speed > 0:
 		process_mode = Node.PROCESS_MODE_ALWAYS
 
-func _reset_dialogue_state():
+func reset_dialogue_state():
 	current_text = ""
 	displayed_text = ""
 	is_text_completed = false
@@ -45,15 +44,17 @@ func show_dialogue(text: String):
 	is_text_completed = false
 	dialogue_active = true
 	textbox_container.show()
+	print("DEBUG: Showing dialogue: ", text)  # Add debug print
 
 func hide_dialogue():
 	dialogue_active = false
 	textbox_container.hide()
-	_reset_dialogue_state()
+	reset_dialogue_state()
 
 func trigger_dialogue(text: String):
-	if !dialogue_active:
-		show_dialogue(text)
+	# Remove the dialogue_active check so it always shows new text
+	show_dialogue(text)
+	print("DEBUG: Triggered dialogue: ", text)  # Add debug print
 
 func complete_text():
 	if !is_text_completed:
