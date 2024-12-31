@@ -2,7 +2,7 @@ extends Node2D
 
 @onready var dialogue_ui = $Dialogue
 @onready var interaction_area_2 = $Scene2
-@onready var interaction_area_3 = $Scene3
+@onready var interaction_area_3 = $Mom/InteractionArea
 @onready var player = $Player
 @onready var truck = $Truck
 @onready var barrier = $Barrier
@@ -165,6 +165,15 @@ func on_interaction_scene2():
 		dialogue_step = 0
 		dialogue_active = true
 		has_triggered_scene2 = true
+		
+		# Move mom to a new position
+		var mom = $Mom
+		if mom:
+			mom.position = Vector2(-116, 99)
+			print("DEBUG: Mom moved to position:", mom.position)
+		else:
+			print("DEBUG: Mom node not found!")
+		
 		if player:
 			player.set_can_move(false)
 		if dialogue_ui:

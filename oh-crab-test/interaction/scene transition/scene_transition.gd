@@ -1,6 +1,9 @@
-# scene_transition.gd
+@tool
 extends Node
 class_name SceneTransition
+
+# Reference the autoloaded singleton
+@onready var scene_manager = get_node("/root/SceneManager")
 
 @export var next_scene_path: String = ""
 @export var transition_delay: float = 0.0
@@ -16,13 +19,14 @@ func _ready() -> void:
 	interaction_area.on_interaction = func():
 		if transition_delay > 0:
 			get_tree().create_timer(transition_delay).timeout.connect(
-				func(): _change_scene()
+				func(): change_scene()
 			)
 		else:
-			_change_scene()
+			change_scene()
 
-func _change_scene() -> void:
-	if not next_scene_path.is_empty():
-		get_tree().change_scene_to_file(next_scene_path)
-	else:
+func change_scene() -> void:
+	if next_scene_path.is_empty():
 		push_error("Cannot transition: Next scene path is not set!")
+		return
+	
+	scene_manager.change_scene(next_scene_path)  # Using the referenced singleton

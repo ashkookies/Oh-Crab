@@ -15,6 +15,10 @@ run/main_scene="res://scenes/game.tscn"
 config/features=PackedStringArray("4.3", "Mobile")
 config/icon="res://icon.svg"
 
+[autoload]
+
+SceneManager="*res://interaction/scene transition/scene_manager.gd"
+
 [input]
 
 ui_accept={
