@@ -7,6 +7,7 @@ extends Node2D
 @onready var truck = $Truck
 @onready var barrier = $Barrier
 @onready var barrier_detector = $Barrier/DetectorArea
+@onready var tutorial_sprite: AnimatedSprite2D = $TutorialSprite
 
 var player_can_move = false
 var dialogue_active = false
@@ -17,6 +18,7 @@ var dialogue_step = 0
 var current_scene = 1  # Start with intro scene
 var barrier_dialogue_cooldown = false
 var waiting_for_timer = false
+var showing_tutorial = false
 
 var truck_target_x = 500
 var truck_initial_x = 0
@@ -55,6 +57,10 @@ func _ready():
 			barrier_detector.body_entered.connect(_on_barrier_area_entered)
 			print("DEBUG: Barrier detector signal connected")
 
+	if tutorial_sprite:
+		tutorial_sprite.visible = false
+		tutorial_sprite.position = Vector2(20, 20)
+
 var is_player_in_scene2_area = false
 
 
@@ -86,16 +92,35 @@ func end_intro_dialogue():
 	
 	print("DEBUG: Ending intro dialogue")
 	dialogue_ui.hide_dialogue()
+	
+	# Show tutorial sprite
+	await get_tree().create_timer(0.5).timeout
+	show_tutorial_popup()
+	
 	player_can_move = true
 	dialogue_active = false
-	current_scene = 0  # Reset to gameplay state
+	current_scene = 0
 	dialogue_step = 0
 	if player and player.has_method("set_can_move"):
 		player.set_can_move(true)
 
+func show_tutorial_popup():
+	if tutorial_sprite:
+		# You can also adjust position here if needed
+		tutorial_sprite.position = Vector2(20, 20)  # Adjust these values
+		tutorial_sprite.visible = true
+		tutorial_sprite.play("default")  # Or whatever your animation name is
+		await get_tree().create_timer(2.0).timeout
+		tutorial_sprite.stop()
+		tutorial_sprite.visible = false
+
+func set_tutorial_position(new_position: Vector2):
+	if tutorial_sprite:
+		tutorial_sprite.position = new_position
+
 func _input(event):
-	# Now only handle advancing dialogue
-	if event.is_action_pressed("ui_accept") and dialogue_active:
+	# Only handle dialogue advancement if not showing tutorial
+	if event.is_action_pressed("ui_accept") and dialogue_active and not showing_tutorial:
 		print("DEBUG: Advancing dialogue - Scene:", current_scene, " Step:", dialogue_step)
 		dialogue_step += 1
 		match current_scene:

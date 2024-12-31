@@ -1,11 +1,12 @@
-#trash.gd
+# trash.gd
 extends Node2D
+
+signal trash_collected  # Add this signal
 
 @onready var interaction_area: InteractionArea = $InteractionArea
 @onready var sprite = $Sprite2D
-@onready var prompt_label: Label = $PromptLabel  # Label above trash
-@onready var collection_label: Label = $CollectionLabel  # Label in top-right
-
+@onready var prompt_label: Label = $PromptLabel
+@onready var collection_label: Label = $CollectionLabel
 var can_interact: bool = false
 var is_collected: bool = false
 
@@ -17,7 +18,7 @@ func _ready():
 	
 	# Set up the collection label in the top right
 	collection_label.set_anchors_preset(Control.PRESET_TOP_RIGHT)
-	collection_label.position = Vector2(-100, 20)  # Adjust these values as needed
+	collection_label.position = Vector2(-100, 20)
 
 func _on_interact():
 	if not is_collected:
@@ -29,7 +30,7 @@ func _on_exit_area():
 		prompt_label.visible = false
 	can_interact = false
 
-func _process(_delta: float):
+func _process(delta: float):
 	if can_interact and Input.is_action_just_pressed("interact") and not is_collected:
 		collect_trash()
 
@@ -40,6 +41,7 @@ func collect_trash():
 	can_interact = false
 	prompt_label.visible = false
 	show_collection_message("Trash collected")
+	emit_signal("trash_collected")  # Add this line to emit the signal
 
 func show_prompt(message: String):
 	prompt_label.text = message

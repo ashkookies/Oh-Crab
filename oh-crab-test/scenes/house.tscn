@@ -1,4 +1,4 @@
-[gd_scene load_steps=33 format=3 uid="uid://cla18fx32rot5"]
+[gd_scene load_steps=35 format=3 uid="uid://cla18fx32rot5"]
 
 [ext_resource type="Script" path="res://scripts/neighborhood.gd" id="1_twxuo"]
 [ext_resource type="PackedScene" uid="uid://b4r4qhmasmabq" path="res://scenes/player.tscn" id="2_lfrv6"]
@@ -12,6 +12,7 @@
 [ext_resource type="PackedScene" uid="uid://c17a1c53ccofp" path="res://interaction/scene transition/scene_transition.tscn" id="10_sioff"]
 [ext_resource type="Script" path="res://scripts/neighborhood/ladder.gd" id="11_1lsob"]
 [ext_resource type="Texture2D" uid="uid://cr2oip5b1t7lv" path="res://assets/sprites/neighborhood/mom.png" id="12_dtrph"]
+[ext_resource type="Script" path="res://scripts/neighborhood/trash_barrier_controller.gd" id="13_gfd2o"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_2mtrj"]
 texture = ExtResource("3_cy6jt")
@@ -1241,14 +1242,11 @@ size = Vector2(20, 360)
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_7vmwg"]
 height = 50.0
 
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_hmyhm"]
-height = 50.0
-
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_iaxso"]
-size = Vector2(9, 263)
+size = Vector2(9, 94)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_4blcr"]
-size = Vector2(9, 263)
+size = Vector2(9, 94)
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_kqxlc"]
 height = 50.0
@@ -1299,11 +1297,17 @@ animations = [{
 radius = 30.0
 height = 60.0
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_q722s"]
+size = Vector2(10, 48)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ghd0x"]
+size = Vector2(7, 48)
+
 [node name="House" type="Node2D"]
 script = ExtResource("1_twxuo")
 
 [node name="Player" parent="." instance=ExtResource("2_lfrv6")]
-position = Vector2(275, 15)
+position = Vector2(-84, -75)
 collision_layer = 3
 
 [node name="Camera2D" type="Camera2D" parent="Player"]
@@ -1336,11 +1340,11 @@ position = Vector2(-160, 12)
 position = Vector2(-248, 8)
 shape = SubResource("RectangleShape2D_b2cdi")
 
-[node name="Trash" parent="." instance=ExtResource("6_c6k0t")]
-position = Vector2(88, 9)
+[node name="Trash" parent="." groups=["trash"] instance=ExtResource("6_c6k0t")]
+position = Vector2(-221, 9)
 
 [node name="Truck" parent="." instance=ExtResource("7_odt6c")]
-position = Vector2(373, -21)
+position = Vector2(345, -21)
 
 [node name="Scene2" parent="." instance=ExtResource("8_48tf7")]
 position = Vector2(0, 150)
@@ -1354,23 +1358,18 @@ shape = SubResource("CapsuleShape2D_7vmwg")
 
 [node name="Dialogue" parent="." instance=ExtResource("9_uu7s3")]
 
-[node name="Scene3" parent="." instance=ExtResource("8_48tf7")]
-position = Vector2(24, -212)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Scene3"]
-position = Vector2(-325, 68)
-shape = SubResource("CapsuleShape2D_hmyhm")
-
 [node name="Barrier" type="StaticBody2D" parent="."]
+position = Vector2(25, 1)
 
 [node name="CollisionArea" type="CollisionShape2D" parent="Barrier"]
-position = Vector2(197.5, -36.5)
+position = Vector2(204, -27)
 shape = SubResource("RectangleShape2D_iaxso")
 
 [node name="DetectorArea" type="Area2D" parent="Barrier"]
+position = Vector2(-1, 2)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Barrier/DetectorArea"]
-position = Vector2(197.5, -37.5)
+position = Vector2(197.5, -29)
 shape = SubResource("RectangleShape2D_4blcr")
 
 [node name="NeighborhoodTransition" parent="." instance=ExtResource("8_48tf7")]
@@ -1380,6 +1379,7 @@ position = Vector2(467, -10)
 shape = SubResource("CapsuleShape2D_kqxlc")
 
 [node name="SceneTransition" parent="NeighborhoodTransition" instance=ExtResource("10_sioff")]
+next_scene_path = "res://scenes/neighborhood.tscn"
 
 [node name="Ladder" type="Area2D" parent="."]
 script = ExtResource("11_1lsob")
@@ -1408,5 +1408,28 @@ frame_progress = 0.701123
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Mom/InteractionArea"]
 position = Vector2(-113, -99)
 shape = SubResource("CapsuleShape2D_wf1ok")
+
+[node name="TrashBarrierController" type="Node2D" parent="."]
+script = ExtResource("13_gfd2o")
+
+[node name="TrashBarrier" type="StaticBody2D" parent="TrashBarrierController"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TrashBarrierController/TrashBarrier"]
+position = Vector2(-11, -8)
+shape = SubResource("RectangleShape2D_q722s")
+
+[node name="DetectorArea" parent="TrashBarrierController/TrashBarrier" instance=ExtResource("8_48tf7")]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TrashBarrierController/TrashBarrier/DetectorArea"]
+position = Vector2(-19.5, -8)
+shape = SubResource("RectangleShape2D_ghd0x")
+
+[node name="TutorialLabel" type="Label" parent="."]
+offset_left = -128.0
+offset_top = 177.0
+offset_right = -14.0
+offset_bottom = 200.0
+scale = Vector2(1.63295, 1)
+text = "WASD to move"
 
 [connection signal="child_entered_tree" from="." to="Player" method="_on_game_child_entered_tree"]

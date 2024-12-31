@@ -199,7 +199,7 @@ _data = {
 "move": SubResource("Animation_5xhkg")
 }
 
-[node name="Game" type="Node2D"]
+[node name="Neighborhood" type="Node2D"]
 
 [node name="Player" parent="." instance=ExtResource("1_amh3c")]
 position = Vector2(57, 36)
