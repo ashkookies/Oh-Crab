@@ -1,6 +1,7 @@
-[gd_scene load_steps=8 format=3 uid="uid://c1nivpev8tong"]
+[gd_scene load_steps=9 format=3 uid="uid://c1nivpev8tong"]
 
 [ext_resource type="Texture2D" uid="uid://bms3dciyjvn6t" path="res://assets/sprites/underwater/Crab Sprite Sheet.png" id="1_e6kuo"]
+[ext_resource type="Script" path="res://scripts/underwater/player_crab.gd" id="1_ov870"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_lp33o"]
 atlas = ExtResource("1_e6kuo")
@@ -42,12 +43,19 @@ animations = [{
 size = Vector2(18, 9.5)
 
 [node name="Crab" type="CharacterBody2D"]
+script = ExtResource("1_ov870")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+z_index = 5
 position = Vector2(0, -16)
 sprite_frames = SubResource("SpriteFrames_b721g")
 frame_progress = 0.551691
 
+[node name="Camera2D" type="Camera2D" parent="AnimatedSprite2D"]
+position = Vector2(0, -9)
+zoom = Vector2(4, 4)
+
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+z_index = 5
 position = Vector2(0, -4.75)
 shape = SubResource("RectangleShape2D_fqa75")
