@@ -1,5 +1,8 @@
 extends CanvasLayer
 
+# Add the signal declaration at the top
+signal dialogue_completed
+
 @onready var textbox_container = $TextboxContainer
 @onready var text_label = $TextboxContainer/MarginContainer/HBoxContainer/Label
 @onready var start_symbol = $TextboxContainer/MarginContainer/HBoxContainer/Start
@@ -14,7 +17,6 @@ var is_text_completed: bool = false
 var dialogue_active: bool = false
 
 func _ready():
-	# Force hide at start
 	textbox_container.hide()
 	dialogue_active = false
 	reset_dialogue_state()
@@ -44,20 +46,28 @@ func show_dialogue(text: String):
 	is_text_completed = false
 	dialogue_active = true
 	textbox_container.show()
-	print("DEBUG: Showing dialogue: ", text)  # Add debug print
+	print("DEBUG: Showing dialogue: ", text)
 
 func hide_dialogue():
 	dialogue_active = false
 	textbox_container.hide()
 	reset_dialogue_state()
+	# Emit the signal when dialogue is hidden
+	dialogue_completed.emit()
 
 func trigger_dialogue(text: String):
-	# Remove the dialogue_active check so it always shows new text
 	show_dialogue(text)
-	print("DEBUG: Triggered dialogue: ", text)  # Add debug print
+	print("DEBUG: Triggered dialogue: ", text)
 
 func complete_text():
 	if !is_text_completed:
 		displayed_text = current_text
 		text_label.text = displayed_text
 		is_text_completed = true
+
+# Add this function to handle advancing dialogue
+func advance_dialogue():
+	if is_text_completed:
+		hide_dialogue()  # This will emit the dialogue_completed signal
+	else:
+		complete_text()

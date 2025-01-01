@@ -2,6 +2,7 @@
 extends Area2D
 class_name InteractionArea
 
+@export var event_index: int = 0
 @export var action_name: String = "interact"
 var on_interaction: Callable = func(): pass
 var on_exit: Callable = func(): pass

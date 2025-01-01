@@ -1,7 +1,5 @@
 extends Node
 
-signal scene_changed()
-
 var current_scene = null
 var fade_overlay: ColorRect
 var fade_duration: float = 1.0
