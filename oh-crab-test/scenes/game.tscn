@@ -8,7 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://ciew4lsb7lr5k" path="res://scenes/slime.tscn" id="6_qq4w1"]
 [ext_resource type="Texture2D" uid="uid://j3ig2adohgrc" path="res://assets/sprites/TX Village Props.png" id="7_p7pgb"]
 [ext_resource type="PackedScene" path="res://scenes/crab_idle.tscn" id="7_son1f"]
-[ext_resource type="PackedScene" uid="uid://f2p3ed5xba1r" path="res://scripts/textbox.tscn" id="8_mqb5p"]
+[ext_resource type="PackedScene" uid="uid://f2p3ed5xba1r" path="res://scenes/textbox.tscn" id="8_mqb5p"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_s8dms"]
 texture = ExtResource("2_g0dqc")

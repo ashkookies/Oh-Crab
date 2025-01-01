@@ -17,7 +17,7 @@ config/icon="res://icon.svg"
 
 [autoload]
 
-SceneManager="*res://interaction/scene transition/scene_manager.gd"
+SceneManager="*res://shortcuts/scene transition/scene_manager.gd"
 
 [input]
 

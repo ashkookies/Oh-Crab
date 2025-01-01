@@ -1,19 +1,18 @@
-[gd_scene load_steps=36 format=3 uid="uid://cla18fx32rot5"]
+[gd_scene load_steps=35 format=3 uid="uid://cla18fx32rot5"]
 
-[ext_resource type="Script" path="res://scripts/neighborhood/house.gd" id="1_twxuo"]
+[ext_resource type="Script" path="res://scripts/house.gd" id="1_twxuo"]
 [ext_resource type="PackedScene" uid="uid://b4r4qhmasmabq" path="res://scenes/player.tscn" id="2_lfrv6"]
 [ext_resource type="Texture2D" uid="uid://cjpmf5rnjcw40" path="res://assets/sprites/neighborhood/dirt.png" id="3_cy6jt"]
 [ext_resource type="Texture2D" uid="uid://b702fk7ugea82" path="res://assets/sprites/neighborhood/rock.png" id="4_ulxhw"]
 [ext_resource type="Texture2D" uid="uid://fx1rmoasto0r" path="res://assets/sprites/neighborhood/House.png" id="6_agwf5"]
-[ext_resource type="PackedScene" uid="uid://dijubl4kxp0u0" path="res://scenes/neighborhood/trash.tscn" id="6_c6k0t"]
-[ext_resource type="PackedScene" uid="uid://cbt4hlv6p03o6" path="res://scenes/neighborhood/truck.tscn" id="7_odt6c"]
-[ext_resource type="PackedScene" uid="uid://cvpkttunkn2nj" path="res://shortcuts/interaction area/interaction_area.tscn" id="8_48tf7"]
-[ext_resource type="PackedScene" uid="uid://jyxkmjclblfm" path="res://scenes/dialogue.tscn" id="9_uu7s3"]
-[ext_resource type="PackedScene" uid="uid://c17a1c53ccofp" path="res://shortcuts/scene transition/scene_transition.tscn" id="10_sioff"]
+[ext_resource type="PackedScene" uid="uid://dijubl4kxp0u0" path="res://scenes/house/trash.tscn" id="6_c6k0t"]
+[ext_resource type="PackedScene" uid="uid://cbt4hlv6p03o6" path="res://scenes/house/truck.tscn" id="7_odt6c"]
+[ext_resource type="PackedScene" uid="uid://cvpkttunkn2nj" path="res://interaction/interaction area/interaction_area.tscn" id="8_48tf7"]
+[ext_resource type="PackedScene" uid="uid://jyxkmjclblfm" path="res://scripts/neighborhood/Scene2.tscn" id="9_uu7s3"]
+[ext_resource type="PackedScene" uid="uid://c17a1c53ccofp" path="res://interaction/scene transition/scene_transition.tscn" id="10_sioff"]
 [ext_resource type="Script" path="res://scripts/neighborhood/ladder.gd" id="11_1lsob"]
 [ext_resource type="Texture2D" uid="uid://cr2oip5b1t7lv" path="res://assets/sprites/neighborhood/mom.png" id="12_dtrph"]
 [ext_resource type="Script" path="res://scripts/neighborhood/trash_barrier_controller.gd" id="13_gfd2o"]
-[ext_resource type="Script" path="res://scripts/dialogue.gd" id="14_rtqj7"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_2mtrj"]
 texture = ExtResource("3_cy6jt")
@@ -1357,6 +1356,8 @@ light_mask = 3
 position = Vector2(180, -157)
 shape = SubResource("CapsuleShape2D_7vmwg")
 
+[node name="Dialogue" parent="." instance=ExtResource("9_uu7s3")]
+
 [node name="Barrier" type="StaticBody2D" parent="."]
 position = Vector2(25, 1)
 
@@ -1422,8 +1423,5 @@ shape = SubResource("RectangleShape2D_q722s")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="TrashBarrierController/TrashBarrier/DetectorArea"]
 position = Vector2(-19.5, -8)
 shape = SubResource("RectangleShape2D_ghd0x")
-
-[node name="Dialogue" parent="." instance=ExtResource("9_uu7s3")]
-script = ExtResource("14_rtqj7")
 
 [connection signal="child_entered_tree" from="." to="Player" method="_on_game_child_entered_tree"]

@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://scripts/neighborhood/truck.gd" id="1_ooryt"]
 [ext_resource type="Texture2D" uid="uid://qm05gqoinvhu" path="res://assets/sprites/neighborhood/Truck.png" id="2_pgikl"]
-[ext_resource type="PackedScene" uid="uid://cvpkttunkn2nj" path="res://interaction/interaction area/interaction_area.tscn" id="3_g5nek"]
+[ext_resource type="PackedScene" uid="uid://cvpkttunkn2nj" path="res://shortcuts/interaction area/interaction_area.tscn" id="3_g5nek"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_bke0x"]
 animations = [{

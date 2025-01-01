@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://cvpkttunkn2nj"]
 
-[ext_resource type="Script" path="res://interaction/interaction area/interaction_area.gd" id="1_vllhy"]
+[ext_resource type="Script" path="res://shortcuts/interaction area/interaction_area.gd" id="1_vllhy"]
 
 [node name="InteractionArea" type="Area2D"]
 collision_mask = 2

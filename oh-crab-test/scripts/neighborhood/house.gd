@@ -143,8 +143,7 @@ func _physics_process(delta):
 			truck.position.x += 100 * delta
 		else:
 			is_truck_leaving = false
-			activate_barrier()
-			print("DEBUG: Truck stopped, barrier activated")
+			print("DEBUG: Truck stopped")  
 
 func activate_barrier():
 	if barrier:
@@ -236,13 +235,9 @@ func show_next_dialogue():
 				dialogue_ui.trigger_dialogue("(There's the truck!!)")
 			1:
 				dialogue_ui.trigger_dialogue("Hey!! I still have some trash here!")
-				# Use a timer node instead of await for better control
-				var timer = Timer.new()
-				add_child(timer)
-				timer.wait_time = 1.5
-				timer.one_shot = true
-				timer.timeout.connect(func(): start_truck_movement())
-				timer.start()
+				# Start truck movement and activate barrier immediately
+				start_truck_movement()
+				activate_barrier()  # Add this line
 			2:
 				dialogue_ui.trigger_dialogue("NOOOOO! Mom is gonna kill me T-T")
 			3:
@@ -250,7 +245,7 @@ func show_next_dialogue():
 			_:
 				end_dialogue()
 				return
-	
+				
 	elif current_scene == 3:
 		match dialogue_step:
 			0:
