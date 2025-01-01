@@ -1,0 +1,53 @@
+[gd_scene load_steps=8 format=3 uid="uid://c1nivpev8tong"]
+
+[ext_resource type="Texture2D" uid="uid://bms3dciyjvn6t" path="res://assets/sprites/underwater/Crab Sprite Sheet.png" id="1_e6kuo"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_lp33o"]
+atlas = ExtResource("1_e6kuo")
+region = Rect2(0, 32, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pgghq"]
+atlas = ExtResource("1_e6kuo")
+region = Rect2(32, 32, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_arajp"]
+atlas = ExtResource("1_e6kuo")
+region = Rect2(64, 32, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_og054"]
+atlas = ExtResource("1_e6kuo")
+region = Rect2(96, 32, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_b721g"]
+animations = [{
+"frames": [{
+"duration": 1.3,
+"texture": SubResource("AtlasTexture_lp33o")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pgghq")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_arajp")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_og054")
+}],
+"loop": true,
+"name": &"default",
+"speed": 12.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_fqa75"]
+size = Vector2(18, 9.5)
+
+[node name="Crab" type="CharacterBody2D"]
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+position = Vector2(0, -16)
+sprite_frames = SubResource("SpriteFrames_b721g")
+frame_progress = 0.551691
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -4.75)
+shape = SubResource("RectangleShape2D_fqa75")
