@@ -2,7 +2,7 @@
 
 extends Node2D
 
-@export var base_speed: float = 500.0  # Speed when the truck starts moving
+@export var base_speed: float = 600.0  # Speed when the truck starts moving
 @export var detection_radius: float = 1000.0  # Distance at which the truck starts moving
 @export var smooth_factor: float = 0.1  # Controls the smoothing; lower values = smoother
 

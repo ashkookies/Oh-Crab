@@ -31,36 +31,45 @@ signal dialogue_ended
 
 @onready var dialogue_system = $"Dialogue"
 @onready var truck = $"Truck"
+@onready var player = get_tree().get_first_node_in_group("player")
+
 var current_line_index = 0
 var current_event_text: Array
 var current_event_index = 0
 var triggered_events = {}
 var current_dialogue_active = false
 var can_advance = false
+var input_disabled = false
+var original_player_speed = 0.0
 
 func _ready():
+	process_priority = -1
+	
 	setup_interaction_areas()
 	dialogue_system.dialogue_completed.connect(_on_dialogue_completed)
 	if truck:
 		truck.position = Vector2(200, 0)
 	
-	get_tree().create_timer(1.0).timeout.connect(func(): start_first_dialogue())
+	get_tree().create_timer(1.0).timeout.connect(start_first_dialogue)
 
-func _unhandled_input(event):
+func _input(event):
 	if current_dialogue_active and dialogue_system.visible:
-		if (event.is_action_pressed("ui_accept") or 
-			(event is InputEventKey and event.keycode == KEY_SPACE)):
-			# Immediately consume the input
+		if event.is_action_pressed("ui_accept"):
 			get_viewport().set_input_as_handled()
-			#accept_event()  # Additional input consumption
-			
-			if can_advance:
-				print("Space pressed - advancing dialogue")
-				can_advance = false
-				if current_line_index >= current_event_text.size():
-					_on_dialogue_completed()
-				else:
-					show_next_line()
+			if not input_disabled:
+				input_disabled = true
+				handle_dialogue_advance()
+				await get_tree().create_timer(0.2).timeout
+				input_disabled = false
+
+func handle_dialogue_advance():
+	if can_advance:
+		print("Advancing dialogue")
+		can_advance = false
+		if current_line_index >= current_event_text.size():
+			_on_dialogue_completed()
+		else:
+			show_next_line()
 
 func start_first_dialogue():
 	for i in story_events.size():
@@ -86,7 +95,7 @@ func create_interaction_area():
 	collision.shape = shape
 	area.add_child(collision)
 	
-	area.body_entered.connect(_on_interaction_area_entered.bind(area))
+	area.body_entered.connect(func(body): _on_interaction_area_entered(body, area))
 	return area
 
 func add_debug_visual(area: Node2D):
@@ -99,10 +108,8 @@ func add_debug_visual(area: Node2D):
 func _on_interaction_area_entered(body: Node2D, area: Area2D):
 	if body.is_in_group("player"):
 		var event_index = area.event_index
-		# Remove the current_dialogue_active check to allow new dialogues to interrupt
 		if not triggered_events.has(event_index):
 			print("Triggering event ", event_index)
-			# Force complete current dialogue if any
 			if current_dialogue_active:
 				force_complete_current_dialogue()
 			trigger_event(event_index)
@@ -110,7 +117,8 @@ func _on_interaction_area_entered(body: Node2D, area: Area2D):
 func force_complete_current_dialogue():
 	current_dialogue_active = false
 	dialogue_system.hide()
-	emit_signal("dialogue_ended")
+	dialogue_ended.emit()
+	player.set_can_move(true)
 
 func _on_dialogue_completed():
 	print("Dialogue completed signal received")
@@ -127,7 +135,8 @@ func _on_dialogue_completed():
 		
 		current_dialogue_active = false
 		dialogue_system.hide()
-		emit_signal("dialogue_ended")
+		dialogue_ended.emit()
+		player.set_can_move(true)
 		
 		await get_tree().create_timer(0.5).timeout
 		current_event_index += 1
@@ -141,7 +150,42 @@ func trigger_event(index: int):
 	current_event_text = event.text
 	current_line_index = 0
 	current_dialogue_active = true
-	emit_signal("dialogue_started")
+	dialogue_started.emit()
+	
+	# Allow movement but prevent jumping
+	if player:
+		# Create a custom script to override jump behavior
+		var script = GDScript.new()
+		script.source_code = """
+extends CharacterBody2D
+
+var original_script
+var movement_enabled = true
+
+func _physics_process(delta):
+	if movement_enabled:
+		var direction = Input.get_axis("ui_left", "ui_right")
+		velocity.x = direction * %s  # Use original speed
+		if velocity.x != 0:
+			$AnimatedSprite2D.play("walk_right" if velocity.x > 0 else "walk_left")
+		else:
+			$AnimatedSprite2D.play("idle")
+		
+		# Apply gravity
+		if not is_on_floor():
+			velocity.y += %s * delta
+		
+		move_and_slide()
+
+func restore_original_script():
+	set_script(original_script)
+""" % [player.SPEED, ProjectSettings.get_setting("physics/2d/default_gravity")]
+		
+		script.reload()
+		var original_script = player.get_script()
+		player.set_script(script)
+		player.original_script = original_script
+	
 	show_next_line()
 
 func show_next_line():
@@ -150,16 +194,16 @@ func show_next_line():
 		var speaker = event.get("speaker", "")
 		var line = current_event_text[current_line_index]
 		
-		dialogue_system.show()  # Make sure dialogue system is visible
+		dialogue_system.show()
 		if event.get("type") == "narration":
 			dialogue_system.trigger_dialogue("*" + line + "*")
 		else:
 			var full_line = speaker + ": " + line if speaker else line
-			print("Showing dialogue line: ", full_line)  # Debug print
+			print("Showing dialogue line: ", full_line)
 			dialogue_system.trigger_dialogue(full_line)
 		
 		current_line_index += 1
-		await get_tree().create_timer(0.2).timeout  # Small delay before allowing next advance
+		await get_tree().create_timer(0.2).timeout
 		can_advance = true
 	else:
 		_on_dialogue_completed()
