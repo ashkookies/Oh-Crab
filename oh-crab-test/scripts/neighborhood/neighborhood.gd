@@ -1,6 +1,6 @@
+##STOP HERE
 extends Node2D
 
-# Story events in sequence
 var story_events = [
 	{
 		"text": ["Hey! Mr. Garbage Man!", "Please slow down!"],
@@ -23,14 +23,22 @@ var story_events = [
 		"type": "dialogue",
 		"speaker": "Nugu",
 		"auto_play": false
+	},
+	{
+		"text": [" (Oh, there seems to be trash on the ground…I wonder if I can catch up to the truck if I follow it)"],
+		"position": Vector2(400, 0),
+		"type": "dialogue",
+		"speaker": "Nugu",
+		"auto_play": false,
+		"restrict_movement": true  # Add this flag for complete movement restriction
 	}
 ]
 
 signal dialogue_started
 signal dialogue_ended
 
-@onready var dialogue_system = $"Dialogue"
-@onready var truck = $"Truck"
+@onready var dialogue_system = get_node("Dialogue")
+@onready var truck = get_node("Truck")
 @onready var player = get_tree().get_first_node_in_group("player")
 
 var current_line_index = 0
@@ -40,21 +48,21 @@ var triggered_events = {}
 var current_dialogue_active = false
 var can_advance = false
 var input_disabled = false
-var original_player_speed = 0.0
 
 func _ready():
-	process_priority = -1
-	
 	setup_interaction_areas()
 	dialogue_system.dialogue_completed.connect(_on_dialogue_completed)
 	if truck:
 		truck.position = Vector2(200, 0)
 	
-	get_tree().create_timer(1.0).timeout.connect(start_first_dialogue)
+	await get_tree().create_timer(1.0).timeout
+	start_first_dialogue()
 
 func _input(event):
 	if current_dialogue_active and dialogue_system.visible:
-		if event.is_action_pressed("ui_accept"):
+		# Check for both ui_accept (Enter) and jump action (Space)
+		if event.is_action_pressed("ui_accept") or event.is_action_pressed("ui_select"):
+			# Prevent the event from being processed by other nodes
 			get_viewport().set_input_as_handled()
 			if not input_disabled:
 				input_disabled = true
@@ -118,7 +126,8 @@ func force_complete_current_dialogue():
 	current_dialogue_active = false
 	dialogue_system.hide()
 	dialogue_ended.emit()
-	player.set_can_move(true)
+	if player and player.has_method("enable_movement"):
+		player.enable_movement(true)
 
 func _on_dialogue_completed():
 	print("Dialogue completed signal received")
@@ -136,7 +145,13 @@ func _on_dialogue_completed():
 		current_dialogue_active = false
 		dialogue_system.hide()
 		dialogue_ended.emit()
-		player.set_can_move(true)
+		
+		# Reset all movement controls when dialogue ends
+		if player:
+			if player.has_method("set_dialogue_active"):
+				player.set_dialogue_active(false)
+			if player.has_method("set_can_move"):
+				player.set_can_move(true)
 		
 		await get_tree().create_timer(0.5).timeout
 		current_event_index += 1
@@ -152,39 +167,14 @@ func trigger_event(index: int):
 	current_dialogue_active = true
 	dialogue_started.emit()
 	
-	# Allow movement but prevent jumping
 	if player:
-		# Create a custom script to override jump behavior
-		var script = GDScript.new()
-		script.source_code = """
-extends CharacterBody2D
-
-var original_script
-var movement_enabled = true
-
-func _physics_process(delta):
-	if movement_enabled:
-		var direction = Input.get_axis("ui_left", "ui_right")
-		velocity.x = direction * %s  # Use original speed
-		if velocity.x != 0:
-			$AnimatedSprite2D.play("walk_right" if velocity.x > 0 else "walk_left")
-		else:
-			$AnimatedSprite2D.play("idle")
-		
-		# Apply gravity
-		if not is_on_floor():
-			velocity.y += %s * delta
-		
-		move_and_slide()
-
-func restore_original_script():
-	set_script(original_script)
-""" % [player.SPEED, ProjectSettings.get_setting("physics/2d/default_gravity")]
-		
-		script.reload()
-		var original_script = player.get_script()
-		player.set_script(script)
-		player.original_script = original_script
+		# Set dialogue active state in player
+		if player.has_method("set_dialogue_active"):
+			player.set_dialogue_active(true)
+			
+		# Handle movement restrictions
+		if event.get("restrict_movement", false) and player.has_method("set_can_move"):
+			player.set_can_move(false)
 	
 	show_next_line()
 

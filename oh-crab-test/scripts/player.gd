@@ -9,9 +9,11 @@ const LADDER_MOVE_SPEED = 30.0
 
 var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
 var can_move = true
+var can_jump = true
 var near_ladder = false
 var on_ladder = false
 var at_ladder_top = false
+var dialogue_active = false
 
 func _physics_process(delta: float) -> void:
 	# Clear ladder states if not near a ladder
@@ -30,7 +32,7 @@ func _physics_process(delta: float) -> void:
 				on_ladder = true
 				at_ladder_top = false
 	
-	  # Handle gravity
+	# Handle gravity
 	if not on_ladder and not at_ladder_top:
 		if not is_on_floor():
 			velocity.y += gravity * delta
@@ -58,7 +60,8 @@ func _physics_process(delta: float) -> void:
 				animated_sprite.play("idle")
 				velocity.x = 0
 				
-			if Input.is_action_just_pressed("ui_accept"):
+			# Only allow jumping if not in dialogue
+			if Input.is_action_just_pressed("ui_accept") and not dialogue_active:
 				at_ladder_top = false
 				velocity.y = JUMP_VELOCITY
 				enable_gravity()
@@ -80,7 +83,8 @@ func _physics_process(delta: float) -> void:
 		
 		# Normal movement logic
 		else:
-			if Input.is_action_just_pressed("ui_accept") and is_on_floor():
+			# Only allow jumping if not in dialogue
+			if Input.is_action_just_pressed("ui_accept") and is_on_floor() and not dialogue_active:
 				velocity.y = JUMP_VELOCITY
 			
 			velocity.x = direction * SPEED
@@ -121,8 +125,8 @@ func _physics_process(delta: float) -> void:
 			else:
 				velocity.x = move_toward(velocity.x, 0, LADDER_MOVE_SPEED)
 		else:
-			# Normal movement logic
-			if Input.is_action_just_pressed("ui_accept") and (is_on_floor() or at_ladder_top):
+			# Only allow jumping if not in dialogue
+			if Input.is_action_just_pressed("ui_accept") and (is_on_floor() or at_ladder_top) and not dialogue_active:
 				velocity.y = JUMP_VELOCITY
 				at_ladder_top = false
 			
@@ -155,11 +159,20 @@ func _physics_process(delta: float) -> void:
 	
 	move_and_slide()
 
+# Input handling for dialogue
+func _unhandled_input(event: InputEvent) -> void:
+	if dialogue_active and event.is_action_pressed("ui_accept"):
+		# Consume the input event to prevent it from triggering jump
+		get_viewport().set_input_as_handled()
+
 func _ready():
 	add_to_group("player")
 
 func set_can_move(value: bool):
 	can_move = value
+
+func set_dialogue_active(value: bool):
+	dialogue_active = value
 
 func enable_gravity() -> void:
 	if not at_ladder_top:
