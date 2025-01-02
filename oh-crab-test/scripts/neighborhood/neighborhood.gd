@@ -1,4 +1,3 @@
-##STOP HERE
 extends Node2D
 
 var story_events = [
@@ -30,7 +29,24 @@ var story_events = [
 		"type": "dialogue",
 		"speaker": "Nugu",
 		"auto_play": false,
-		"restrict_movement": true  # Add this flag for complete movement restriction
+		"restrict_movement": true
+	},
+	{
+		"text": ["Hey Nugu! Wanna play with us?", "Later!!"],
+		"position": Vector2(500, 0),
+		"type": "dialogue",
+		"speakers": ["Friend1", "Nugu"],
+		"auto_play": false,
+		"restrict_movement": true,
+		"unlock_movement_after": true
+	},
+	{
+		"text": ["Hey kid! Wanna join our coastal cleanup drive-", "MOVE!!"],
+		"position": Vector2(600, 0),
+		"type": "dialogue",
+		"speakers": ["Stranger1", "Nugu"],
+		"auto_play": false,
+		"restrict_movement": true
 	}
 ]
 
@@ -55,14 +71,23 @@ func _ready():
 	if truck:
 		truck.position = Vector2(200, 0)
 	
+	# Set up input handling
+	process_mode = Node.PROCESS_MODE_ALWAYS
+	
 	await get_tree().create_timer(1.0).timeout
 	start_first_dialogue()
 
-func _input(event):
-	if current_dialogue_active and dialogue_system.visible:
-		# Check for both ui_accept (Enter) and jump action (Space)
-		if event.is_action_pressed("ui_accept") or event.is_action_pressed("ui_select"):
-			# Prevent the event from being processed by other nodes
+func _unhandled_input(event):
+	# If dialogue is active, consume all jump inputs
+	if current_dialogue_active:
+		if event.is_action("ui_select"):  # Assuming this is your jump action
+			get_viewport().set_input_as_handled()
+			if not input_disabled:
+				input_disabled = true
+				handle_dialogue_advance()
+				await get_tree().create_timer(0.2).timeout
+				input_disabled = false
+		elif event.is_action_pressed("ui_accept"):
 			get_viewport().set_input_as_handled()
 			if not input_disabled:
 				input_disabled = true
@@ -92,7 +117,6 @@ func setup_interaction_areas():
 		interaction_area.position = event.position
 		interaction_area.event_index = i
 		add_child(interaction_area)
-		add_debug_visual(interaction_area)
 
 func create_interaction_area():
 	var area = preload("res://shortcuts/interaction area/interaction_area.gd").new()
@@ -106,16 +130,14 @@ func create_interaction_area():
 	area.body_entered.connect(func(body): _on_interaction_area_entered(body, area))
 	return area
 
-func add_debug_visual(area: Node2D):
-	var debug_rect = ColorRect.new()
-	debug_rect.size = Vector2(100, 200)
-	debug_rect.position = Vector2(-50, -100)
-	debug_rect.color = Color(1, 0, 0, 0.2)
-	area.add_child(debug_rect)
-
 func _on_interaction_area_entered(body: Node2D, area: Area2D):
 	if body.is_in_group("player"):
 		var event_index = area.event_index
+		# Don't retrigger if this is the currently active dialogue
+		if current_dialogue_active and current_event_index == event_index:
+			return
+			
+		# Otherwise, proceed with triggering new dialogue
 		if not triggered_events.has(event_index):
 			print("Triggering event ", event_index)
 			if current_dialogue_active:
@@ -126,8 +148,14 @@ func force_complete_current_dialogue():
 	current_dialogue_active = false
 	dialogue_system.hide()
 	dialogue_ended.emit()
-	if player and player.has_method("enable_movement"):
-		player.enable_movement(true)
+	enable_player_movement(true)
+
+func enable_player_movement(enabled: bool):
+	if player:
+		if player.has_method("enable_movement"):
+			player.enable_movement(enabled)
+		if player.has_method("set_can_move"):
+			player.set_can_move(enabled)
 
 func _on_dialogue_completed():
 	print("Dialogue completed signal received")
@@ -146,12 +174,13 @@ func _on_dialogue_completed():
 		dialogue_system.hide()
 		dialogue_ended.emit()
 		
-		# Reset all movement controls when dialogue ends
+		# Reset player state when dialogue ends
 		if player:
 			if player.has_method("set_dialogue_active"):
 				player.set_dialogue_active(false)
-			if player.has_method("set_can_move"):
-				player.set_can_move(true)
+			# Only enable movement if unlock_movement_after is true or not specified
+			if current_event.get("unlock_movement_after", true):
+				enable_player_movement(true)
 		
 		await get_tree().create_timer(0.5).timeout
 		current_event_index += 1
@@ -171,23 +200,28 @@ func trigger_event(index: int):
 		# Set dialogue active state in player
 		if player.has_method("set_dialogue_active"):
 			player.set_dialogue_active(true)
-			
+		
 		# Handle movement restrictions
-		if event.get("restrict_movement", false) and player.has_method("set_can_move"):
-			player.set_can_move(false)
+		if event.get("restrict_movement", false):
+			enable_player_movement(false)
 	
 	show_next_line()
 
 func show_next_line():
 	if current_line_index < current_event_text.size():
 		var event = story_events[current_event_index]
-		var speaker = event.get("speaker", "")
-		var line = current_event_text[current_line_index]
+		var line = str(current_event_text[current_line_index])  # Convert to string
 		
 		dialogue_system.show()
 		if event.get("type") == "narration":
 			dialogue_system.trigger_dialogue("*" + line + "*")
 		else:
+			var speaker = ""
+			if event.has("speakers"):
+				speaker = str(event.speakers[current_line_index])  # Convert to string
+			else:
+				speaker = str(event.get("speaker", ""))  # Convert to string
+			
 			var full_line = speaker + ": " + line if speaker else line
 			print("Showing dialogue line: ", full_line)
 			dialogue_system.trigger_dialogue(full_line)

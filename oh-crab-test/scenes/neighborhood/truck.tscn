@@ -22,7 +22,7 @@ animations = [{
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ooiw2"]
-size = Vector2(216, 76)
+size = Vector2(234, 76)
 
 [node name="Truck" type="Node2D"]
 script = ExtResource("1_ooryt")
@@ -37,5 +37,5 @@ collision_mask = 1
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="InteractionArea"]
 light_mask = 3
-position = Vector2(-34.8402, -184.072)
+position = Vector2(-43.8402, -184.072)
 shape = SubResource("RectangleShape2D_ooiw2")
