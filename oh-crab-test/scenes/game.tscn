@@ -1582,10 +1582,6 @@ position = Vector2(380, 113)
 [node name="CollisionShape2D" type="CollisionShape2D" parent="killzone"]
 shape = SubResource("WorldBoundaryShape2D_r8mjf")
 
-[node name="Bone2D" type="Bone2D" parent="killzone/CollisionShape2D"]
-light_mask = 3
-position = Vector2(-39, -113)
-
 [node name="Coins" type="Node" parent="."]
 
 [node name="coin" parent="Coins" instance=ExtResource("4_n5jbu")]
