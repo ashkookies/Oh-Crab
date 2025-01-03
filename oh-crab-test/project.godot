@@ -18,7 +18,6 @@ config/icon="res://icon.svg"
 [autoload]
 
 SceneManager="*res://shortcuts/scene transition/scene_manager.gd"
-EventManager="*res://scripts/event_manager.gd"
 
 [input]
 
