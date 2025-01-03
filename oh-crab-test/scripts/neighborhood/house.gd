@@ -7,7 +7,12 @@ extends Node2D
 @onready var truck = $Truck
 @onready var barrier = $Barrier
 @onready var barrier_detector = $Barrier/DetectorArea
-@onready var tutorial_sprite: AnimatedSprite2D = $TutorialSprite
+@onready var tutorial_group = $TutorialSprites
+@onready var key_w = $TutorialSprites/W
+@onready var key_a = $TutorialSprites/A
+@onready var key_s = $TutorialSprites/S
+@onready var key_d = $TutorialSprites/D
+@onready var key_jump = $TutorialSprites/Space
 
 var player_can_move = false
 var dialogue_active = false
@@ -23,6 +28,37 @@ var showing_tutorial = false
 var truck_target_x = 500
 var truck_initial_x = 0
 
+var current_tutorial_step = 0
+
+var tutorial_sequence = [
+	{
+		"controls": ["horizontal"],  # Show A and D first
+		"positions": {
+			"a": Vector2(0, 0),   # A to the left
+			"d": Vector2(100, 60)   # D to the right
+		},
+		"wait_for_input": true,     # Wait for A or D press
+		"required_actions": ["move_left", "move_right"]
+	},
+	{
+		"controls": ["vertical"],   # Show W and S next
+		"positions": {
+			"w": Vector2(60, 20),   # W above
+			"s": Vector2(60, 60)    # S below
+		},
+		"duration": 2.0            # Show for 2 seconds
+	},
+	{
+		"controls": ["jump"],      # Show jump key last
+		"positions": {
+			"jump": Vector2(60, 40)
+		},
+		"duration": 2.0           # Show for 2 seconds
+	}
+]
+
+var waiting_for_tutorial_input = false
+var required_tutorial_actions = []
 
 func _ready():
 	print("DEBUG: _ready called")
@@ -37,7 +73,7 @@ func _ready():
 		
 	if interaction_area_3:
 		interaction_area_3.body_entered.connect(_on_scene3_body_entered)
-		print("DEBUG: Scene2 area signals connected")
+		print("DEBUG: Scene3 area signals connected")
 	
 	if player and player.has_method("set_can_move"):
 		player.set_can_move(false)
@@ -57,12 +93,15 @@ func _ready():
 			barrier_detector.body_entered.connect(_on_barrier_area_entered)
 			print("DEBUG: Barrier detector signal connected")
 
-	if tutorial_sprite:
-		tutorial_sprite.visible = false
-		tutorial_sprite.position = Vector2(20, 20)
-
-var is_player_in_scene2_area = false
-
+	# Initialize tutorial sprites
+	if tutorial_group:
+		# Parent Node doesn't need visibility setting
+		key_w.visible = false
+		key_a.visible = false
+		key_s.visible = false
+		key_d.visible = false
+		key_jump.visible = false
+	set_process_input(true)
 
 func show_intro_dialogue():
 	if not dialogue_ui:
@@ -93,9 +132,9 @@ func end_intro_dialogue():
 	print("DEBUG: Ending intro dialogue")
 	dialogue_ui.hide_dialogue()
 	
-	# Show tutorial sprite
+	# Show tutorial sequence
 	await get_tree().create_timer(0.5).timeout
-	show_tutorial_popup()
+	show_tutorial_sequence()
 	
 	player_can_move = true
 	dialogue_active = false
@@ -104,22 +143,96 @@ func end_intro_dialogue():
 	if player and player.has_method("set_can_move"):
 		player.set_can_move(true)
 
-func show_tutorial_popup():
-	if tutorial_sprite:
-		# You can also adjust position here if needed
-		tutorial_sprite.position = Vector2(20, 20)  # Adjust these values
-		tutorial_sprite.visible = true
-		tutorial_sprite.play("default")  # Or whatever your animation name is
-		await get_tree().create_timer(2.0).timeout
-		tutorial_sprite.stop()
-		tutorial_sprite.visible = false
+func show_tutorial_sequence():
+	print("DEBUG: Starting tutorial sequence")
+	showing_tutorial = true
+	current_tutorial_step = 0
+	show_current_tutorial_step()
 
-func set_tutorial_position(new_position: Vector2):
-	if tutorial_sprite:
-		tutorial_sprite.position = new_position
+func show_current_tutorial_step():
+	if current_tutorial_step >= tutorial_sequence.size():
+		end_tutorial_sequence()
+		return
+		
+	var step = tutorial_sequence[current_tutorial_step]
+	
+	# Hide all keys first
+	key_w.visible = false
+	key_a.visible = false
+	key_s.visible = false
+	key_d.visible = false
+	key_jump.visible = false
+	
+	# Show and position the required keys for this step
+	for control in step.controls:
+		match control:
+			"horizontal":
+				key_a.visible = true
+				key_d.visible = true
+				key_a.position = step.positions.a
+				key_d.position = step.positions.d
+				key_a.play("default")
+				key_d.play("default")
+				
+				# Set up input waiting
+				waiting_for_tutorial_input = true
+				required_tutorial_actions = step.required_actions
+				
+			"vertical":
+				key_w.visible = true
+				key_s.visible = true
+				key_w.position = step.positions.w
+				key_s.position = step.positions.s
+				key_w.play("default")
+				key_s.play("default")
+				
+				# Use timer for this step
+				if step.has("duration"):
+					await get_tree().create_timer(step.duration).timeout
+					advance_tutorial()
+				
+			"jump":
+				key_jump.visible = true
+				key_jump.position = step.positions.jump
+				key_jump.play("default")
+				
+				# Use timer for this step
+				if step.has("duration"):
+					await get_tree().create_timer(step.duration).timeout
+					advance_tutorial()
+
+func end_tutorial_sequence():
+	print("DEBUG: Ending tutorial sequence")
+	# Stop all animations
+	key_w.stop()
+	key_a.stop()
+	key_s.stop()
+	key_d.stop()
+	key_jump.stop()
+	
+	# Hide everything
+	key_w.visible = false
+	key_a.visible = false
+	key_s.visible = false
+	key_d.visible = false
+	key_jump.visible = false
+	showing_tutorial = false
+	
+	# Make sure player can move after tutorial
+	if player and player.has_method("set_can_move"):
+		player.set_can_move(true)
+
 
 func _input(event):
-	# Only handle dialogue advancement if not showing tutorial
+	# Handle tutorial input
+	if waiting_for_tutorial_input and showing_tutorial:
+		for action in required_tutorial_actions:
+			if event.is_action_pressed(action):
+				waiting_for_tutorial_input = false
+				advance_tutorial()
+				break
+	
+	# Keep existing input handling
 	if event.is_action_pressed("ui_accept") and dialogue_active and not showing_tutorial:
 		print("DEBUG: Advancing dialogue - Scene:", current_scene, " Step:", dialogue_step)
 		dialogue_step += 1
@@ -160,7 +273,6 @@ func activate_barrier():
 	else:
 		print("DEBUG: Failed to activate barrier - barrier node is null")
 
-
 func deactivate_barrier():
 	if barrier:
 		print("DEBUG: DEACTIVATING barrier - Scene:", current_scene, " Step:", dialogue_step)
@@ -182,6 +294,76 @@ func deactivate_barrier():
 		print("- collision_mask:", barrier.collision_mask)
 	else:
 		print("DEBUG: Failed to deactivate barrier - barrier node is null")
+
+func show_next_dialogue():
+	print("DEBUG: Starting dialogue step:", dialogue_step, " in scene:", current_scene)
+	
+	if not dialogue_ui:
+		print("DEBUG: Dialogue UI is null!")
+		return
+	
+	dialogue_ui.visible = true  # Ensure UI is visible
+	dialogue_active = true
+	
+	if current_scene == 2:
+		match dialogue_step:
+			0:
+				dialogue_ui.trigger_dialogue("(There's the truck!!)")
+			1:
+				dialogue_ui.trigger_dialogue("Hey!! I still have some trash here!")
+				# Start truck movement and activate barrier immediately
+				start_truck_movement()
+				activate_barrier()
+			2:
+				dialogue_ui.trigger_dialogue("NOOOOO! Mom is gonna kill me T-T")
+			3:
+				dialogue_ui.trigger_dialogue("(I should just go back home)")
+			_:
+				end_dialogue()
+				return
+				
+	elif current_scene == 3:
+		match dialogue_step:
+			0:
+				dialogue_ui.trigger_dialogue("Mom… The garbage truck already left…")
+			1:
+				dialogue_ui.trigger_dialogue("Mom: Boy if you don't want to end up being the one inside the trash bag instead, then RUN!")
+			2:
+				dialogue_ui.trigger_dialogue("OKAY CHILL!!!!")
+			3:
+				dialogue_ui.trigger_dialogue("Ugh, what a way to start my morning")
+				deactivate_barrier()
+			_:
+				end_dialogue()
+				return
+
+func end_dialogue():
+	print("DEBUG: Ending dialogue in scene:", current_scene)
+	if dialogue_ui:
+		dialogue_ui.hide_dialogue()
+	dialogue_active = false
+	
+	if current_scene == 3:
+		deactivate_barrier()
+	
+	if player:
+		player.set_can_move(true)
+
+func start_truck_movement():
+	print("DEBUG: Starting truck movement")
+	is_truck_leaving = true
+	if truck:
+		print("DEBUG: Truck position before movement:", truck.position)
+
+func _on_scene2_body_entered(body):
+	print("DEBUG: Body entered Scene2 area:", body.name)
+	if body == player and not has_triggered_scene2:
+		on_interaction_scene2()
+		
+func _on_scene3_body_entered(body):
+	print("DEBUG: Body entered Scene3 area:", body.name)
+	if body == player and not has_triggered_scene3 and has_triggered_scene2:
+		on_interaction_scene3()
 
 func on_interaction_scene2():
 	if not has_triggered_scene2:
@@ -219,72 +401,6 @@ func on_interaction_scene3():
 		dialogue_ui.visible = true  # Ensure UI is visible
 		show_next_dialogue()
 
-func show_next_dialogue():
-	print("DEBUG: Starting dialogue step:", dialogue_step, " in scene:", current_scene)
-	
-	if not dialogue_ui:
-		print("DEBUG: Dialogue UI is null!")
-		return
-	
-	dialogue_ui.visible = true  # Ensure UI is visible
-	dialogue_active = true
-	
-	if current_scene == 2:
-		match dialogue_step:
-			0:
-				dialogue_ui.trigger_dialogue("(There's the truck!!)")
-			1:
-				dialogue_ui.trigger_dialogue("Hey!! I still have some trash here!")
-				# Start truck movement and activate barrier immediately
-				start_truck_movement()
-				activate_barrier()  # Add this line
-			2:
-				dialogue_ui.trigger_dialogue("NOOOOO! Mom is gonna kill me T-T")
-			3:
-				dialogue_ui.trigger_dialogue("(I should just go back home)")
-			_:
-				end_dialogue()
-				return
-				
-	elif current_scene == 3:
-		match dialogue_step:
-			0:
-				dialogue_ui.trigger_dialogue("Mom… The garbage truck already left…")
-			1:
-				dialogue_ui.trigger_dialogue("Mom: Boy if you don't want to end up being the one inside the trash bag instead, then RUN!")
-			2:
-				dialogue_ui.trigger_dialogue("OKAY CHILL!!!!")
-			3:
-				dialogue_ui.trigger_dialogue("Ugh, what a way to start my morning")
-				deactivate_barrier()
-			_:
-				end_dialogue()
-				return
-
-func start_truck_movement():
-	print("DEBUG: Starting truck movement")
-	is_truck_leaving = true
-	if truck:
-		print("DEBUG: Truck position before movement:", truck.position)
-
-func end_dialogue():
-	print("DEBUG: Ending dialogue in scene:", current_scene)
-	if dialogue_ui:
-		dialogue_ui.hide_dialogue()
-	dialogue_active = false
-	
-	if current_scene == 3:
-		deactivate_barrier()
-	
-	if player:
-		player.set_can_move(true)
-
-func _on_scene2_body_entered(body):
-	print("DEBUG: Body entered Scene2 area:", body.name)
-	if body == player and not has_triggered_scene2:
-		on_interaction_scene2()
-		
-func _on_scene3_body_entered(body):
-	print("DEBUG: Body entered Scene3 area:", body.name)
-	if body == player and not has_triggered_scene3 and has_triggered_scene2:
-		on_interaction_scene3()
+func advance_tutorial():
+	current_tutorial_step += 1
+	show_current_tutorial_step()
