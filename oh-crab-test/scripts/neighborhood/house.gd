@@ -7,12 +7,15 @@ extends Node2D
 @onready var truck = $Truck
 @onready var barrier = $Barrier
 @onready var barrier_detector = $Barrier/DetectorArea
+@onready var viewport_size: Vector2
+@onready var screen_center: Vector2
+@onready var tutorial_margin: float = 100.0
 @onready var tutorial_group = $TutorialSprites
-@onready var key_w = $TutorialSprites/W
-@onready var key_a = $TutorialSprites/A
-@onready var key_s = $TutorialSprites/S
-@onready var key_d = $TutorialSprites/D
-@onready var key_jump = $TutorialSprites/Space
+@onready var key_w = $TutorialSprites/W as AnimatedSprite2D
+@onready var key_a = $TutorialSprites/A as AnimatedSprite2D
+@onready var key_s = $TutorialSprites/S as AnimatedSprite2D
+@onready var key_d = $TutorialSprites/D as AnimatedSprite2D
+@onready var key_jump = $TutorialSprites/Space as AnimatedSprite2D
 
 var player_can_move = false
 var dialogue_active = false
@@ -24,36 +27,36 @@ var current_scene = 1  # Start with intro scene
 var barrier_dialogue_cooldown = false
 var waiting_for_timer = false
 var showing_tutorial = false
-
 var truck_target_x = 500
 var truck_initial_x = 0
-
 var current_tutorial_step = 0
 
 var tutorial_sequence = [
 	{
-		"controls": ["horizontal"],  # Show A and D first
+		"keys": ["horizontal"],  
+		"sprites": ["a", "d"],
 		"positions": {
-			"a": Vector2(0, 0),   # A to the left
-			"d": Vector2(100, 60)   # D to the right
+			"a": Vector2(0.3, 0.5),  # Changed from 0.8 to 0.5 for vertical position
+			"d": Vector2(0.7, 0.5)   # Changed from 0.8 to 0.5 for vertical position
 		},
-		"wait_for_input": true,     # Wait for A or D press
-		"required_actions": ["move_left", "move_right"]
+		"required_actions": ["ui_left", "ui_right"]
 	},
 	{
-		"controls": ["vertical"],   # Show W and S next
+		"keys": ["vertical"],
+		"sprites": ["w", "s"],
 		"positions": {
-			"w": Vector2(60, 20),   # W above
-			"s": Vector2(60, 60)    # S below
+			"w": Vector2(0.5, 0.4),  # Changed from 0.7 to 0.4
+			"s": Vector2(0.5, 0.6)   # Changed from 0.9 to 0.6
 		},
-		"duration": 2.0            # Show for 2 seconds
+		"duration": 2.0
 	},
 	{
-		"controls": ["jump"],      # Show jump key last
+		"keys": ["jump"],
+		"sprites": ["space"],
 		"positions": {
-			"jump": Vector2(60, 40)
+			"space": Vector2(0.5, 0.5)  # Changed from 0.8 to 0.5
 		},
-		"duration": 2.0           # Show for 2 seconds
+		"duration": 2.0
 	}
 ]
 
@@ -61,6 +64,13 @@ var waiting_for_tutorial_input = false
 var required_tutorial_actions = []
 
 func _ready():
+	print("Tutorial nodes check:")
+	print("- tutorial_group:", tutorial_group != null)
+	print("- key_w:", key_w != null)
+	print("- key_a:", key_a != null)
+	print("- key_s:", key_s != null)
+	print("- key_d:", key_d != null)
+	print("- key_jump:", key_jump != null)
 	print("DEBUG: _ready called")
 	current_scene = 1
 	player_can_move = false
@@ -93,15 +103,96 @@ func _ready():
 			barrier_detector.body_entered.connect(_on_barrier_area_entered)
 			print("DEBUG: Barrier detector signal connected")
 
-	# Initialize tutorial sprites
 	if tutorial_group:
-		# Parent Node doesn't need visibility setting
-		key_w.visible = false
-		key_a.visible = false
-		key_s.visible = false
-		key_d.visible = false
-		key_jump.visible = false
-	set_process_input(true)
+		print("Tutorial group setup:")
+		print("- Position:", tutorial_group.position)
+		print("- Visible:", tutorial_group.visible)
+		
+		# Make sure tutorial group is visible
+		tutorial_group.visible = true
+		
+		# Debug each sprite
+		for sprite in [key_w, key_a, key_s, key_d, key_jump]:
+			if sprite:
+				print("Sprite {sprite.name}:")
+				print("- Has frames:", sprite.sprite_frames != null)
+				if sprite.sprite_frames:
+					print("- Animations:", sprite.sprite_frames.get_animation_names())
+				print("- Position:", sprite.position)
+				print("- Visible:", sprite.visible)
+				
+				# Make sure each sprite is set up correctly
+				sprite.visible = false  # Will be made visible when needed
+				sprite.modulate.a = 0   # Will be set to 1 when shown
+	
+	if !is_tutorial_nodes_valid():
+		print("ERROR: Tutorial sprites not properly set up!")
+		return
+		
+	update_screen_dimensions()
+	get_tree().root.size_changed.connect(update_screen_dimensions)
+	initialize_tutorial_sprites()
+	
+	print("\nValidating tutorial setup:")
+	if not tutorial_group is Node2D:
+		print("ERROR: tutorial_group must be a Node2D!")
+		return
+		
+	for sprite_name in ["W", "A", "S", "D", "Space"]:
+		var sprite = get_node_or_null("TutorialSprites/" + sprite_name)
+		if not sprite is AnimatedSprite2D:
+			print("ERROR: " + sprite_name + " sprite not found or not an AnimatedSprite2D!")
+		else:
+			print(sprite_name + " sprite found and valid")
+	
+	print("\n=== TUTORIAL SETUP DEBUG ===")
+	
+	# Check tutorial group
+	print("\nTutorial Group Check:")
+	print("- Reference:", tutorial_group)
+	print("- Is Node2D:", tutorial_group is Node2D if tutorial_group else "null")
+	print("- Position:", tutorial_group.position if tutorial_group is Node2D else "N/A")
+	print("- Visible:", tutorial_group.visible if tutorial_group else "null")
+	
+	# Check all sprite references
+	print("\nSprite References Check:")
+	var sprites = {
+		"W": key_w,
+		"A": key_a,
+		"S": key_s,
+		"D": key_d,
+		"Space": key_jump
+	}
+	
+	for key in sprites:
+		var sprite = sprites[key]
+		print("\n{key} Sprite Check:")
+		print("- Reference:", sprite)
+		print("- Is AnimatedSprite2D:", sprite is AnimatedSprite2D if sprite else "null")
+		if sprite and sprite is AnimatedSprite2D:
+			print("- Has frames:", sprite.sprite_frames != null)
+			print("- Animations:", sprite.sprite_frames.get_animation_names() if sprite.sprite_frames else "none")
+			print("- Position:", sprite.position)
+			print("- Visible:", sprite.visible)
+			print("- Modulate:", sprite.modulate)
+
+func is_tutorial_nodes_valid() -> bool:
+	return tutorial_group != null && key_w != null && key_a != null && key_s != null && key_d != null && key_jump != null
+
+func initialize_tutorial_sprites():
+	if is_tutorial_nodes_valid():
+		key_w.modulate.a = 0
+		key_a.modulate.a = 0
+		key_s.modulate.a = 0
+		key_d.modulate.a = 0
+		key_jump.modulate.a = 0
+
+func update_screen_dimensions():
+	viewport_size = get_viewport().get_visible_rect().size
+	screen_center = viewport_size / 2
+	# Update tutorial positions if they're currently visible
+	if showing_tutorial:
+		show_current_tutorial_step()
 
 func show_intro_dialogue():
 	if not dialogue_ui:
@@ -144,62 +235,89 @@ func end_intro_dialogue():
 		player.set_can_move(true)
 
 func show_tutorial_sequence():
+	if !is_tutorial_nodes_valid():
+		print("ERROR: Cannot start tutorial - sprites not found!")
+		return
+		
 	print("DEBUG: Starting tutorial sequence")
 	showing_tutorial = true
 	current_tutorial_step = 0
 	show_current_tutorial_step()
 
 func show_current_tutorial_step():
-	if current_tutorial_step >= tutorial_sequence.size():
-		end_tutorial_sequence()
-		return
-		
+	print("\n=== TUTORIAL STEP DEBUG ===")
+	print("Current step:", current_tutorial_step)
+	print("Step data:", tutorial_sequence[current_tutorial_step])
+	
+	# Debug viewport and screen info
+	print("\nScreen Info:")
+	print("Viewport size:", viewport_size)
+	print("Screen center:", screen_center)
+	
+	# First hide all keys
+	hide_all_keys()
+	print("\nAll keys hidden")
+	
 	var step = tutorial_sequence[current_tutorial_step]
 	
-	# Hide all keys first
-	key_w.visible = false
-	key_a.visible = false
-	key_s.visible = false
-	key_d.visible = false
-	key_jump.visible = false
-	
-	# Show and position the required keys for this step
-	for control in step.controls:
-		match control:
-			"horizontal":
-				key_a.visible = true
-				key_d.visible = true
-				key_a.position = step.positions.a
-				key_d.position = step.positions.d
-				key_a.play("default")
-				key_d.play("default")
-				
-				# Set up input waiting
-				waiting_for_tutorial_input = true
-				required_tutorial_actions = step.required_actions
-				
-			"vertical":
-				key_w.visible = true
-				key_s.visible = true
-				key_w.position = step.positions.w
-				key_s.position = step.positions.s
-				key_w.play("default")
-				key_s.play("default")
-				
-				# Use timer for this step
-				if step.has("duration"):
-					await get_tree().create_timer(step.duration).timeout
-					advance_tutorial()
-				
-			"jump":
-				key_jump.visible = true
-				key_jump.position = step.positions.jump
-				key_jump.play("default")
-				
-				# Use timer for this step
-				if step.has("duration"):
-					await get_tree().create_timer(step.duration).timeout
-					advance_tutorial()
+	# Show and animate required keys
+	print("\nAttempting to show sprites:")
+	for sprite_name in step.sprites:
+		var sprite = get_sprite_for_key(sprite_name) as AnimatedSprite2D
+		print("\nProcessing {sprite_name}:")
+		print("- Sprite reference:", sprite)
+		
+		if sprite and sprite is AnimatedSprite2D:
+			# Debug sprite state before changes
+			print("- Initial state:")
+			print("  - Visible:", sprite.visible)
+			print("  - Modulate:", sprite.modulate)
+			print("  - Position:", sprite.position)
+			print("  - Has frames:", sprite.sprite_frames != null)
+			
+			# Calculate and set position
+			var screen_pos = get_screen_position(step.positions[sprite_name])
+			sprite.position = screen_pos
+			
+			# Make visible
+			sprite.show()
+			sprite.modulate.a = 1
+			
+			# Debug sprite state after changes
+			print("- After changes:")
+			print("  - Visible:", sprite.visible)
+			print("  - Modulate:", sprite.modulate)
+			print("  - Position:", sprite.position)
+			
+			# Try to play animation
+			if sprite.sprite_frames and sprite.sprite_frames.has_animation("default"):
+				sprite.play("default")
+				print("  - Animation started")
+			else:
+				print("  - WARNING: No 'default' animation found")
+		else:
+			print("ERROR: Invalid sprite reference")
+
+func get_sprite_for_key(key_name: String) -> AnimatedSprite2D:
+	match key_name:
+		"w": return key_w
+		"a": return key_a
+		"s": return key_s
+		"d": return key_d
+		"space": return key_jump
+	return null
+
+func hide_all_keys():
+	for sprite in [key_w, key_a, key_s, key_d, key_jump]:
+		if sprite:
+			sprite.modulate.a = 0
+			sprite.stop()
+
+func get_screen_position(factors: Vector2) -> Vector2:
+	return Vector2(
+		viewport_size.x * factors.x,
+		viewport_size.y * factors.y
+	)
 
 func end_tutorial_sequence():
 	print("DEBUG: Ending tutorial sequence")
@@ -210,18 +328,17 @@ func end_tutorial_sequence():
 	key_d.stop()
 	key_jump.stop()
 	
-	# Hide everything
-	key_w.visible = false
-	key_a.visible = false
-	key_s.visible = false
-	key_d.visible = false
-	key_jump.visible = false
+	# Hide using modulate
+	key_w.modulate.a = 0
+	key_a.modulate.a = 0
+	key_s.modulate.a = 0
+	key_d.modulate.a = 0
+	key_jump.modulate.a = 0
 	showing_tutorial = false
 	
 	# Make sure player can move after tutorial
 	if player and player.has_method("set_can_move"):
 		player.set_can_move(true)
-
 
 func _input(event):
 	# Handle tutorial input
@@ -403,4 +520,7 @@ func on_interaction_scene3():
 
 func advance_tutorial():
 	current_tutorial_step += 1
-	show_current_tutorial_step()
+	if current_tutorial_step >= tutorial_sequence.size():
+		end_tutorial_sequence()
+	else:
+		show_current_tutorial_step()

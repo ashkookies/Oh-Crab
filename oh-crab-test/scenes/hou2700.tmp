@@ -2092,29 +2092,29 @@ layer_0/tile_data = PackedInt32Array(-327691, 1703936, 6, -393227, 1703936, 6, -
 position = Vector2(4, -155)
 sprite_frames = SubResource("SpriteFrames_sw0pp")
 autoplay = "default"
-frame_progress = 0.753207
+frame_progress = 0.85239
 
 [node name="A" type="AnimatedSprite2D" parent="TutorialSprites"]
 position = Vector2(-14, -138)
 sprite_frames = SubResource("SpriteFrames_evlc1")
 autoplay = "default"
-frame_progress = 0.202539
+frame_progress = 0.301722
 
 [node name="S" type="AnimatedSprite2D" parent="TutorialSprites"]
 position = Vector2(4, -138)
 sprite_frames = SubResource("SpriteFrames_2wned")
 autoplay = "default"
-frame_progress = 0.397648
+frame_progress = 0.496831
 
 [node name="D" type="AnimatedSprite2D" parent="TutorialSprites"]
 position = Vector2(22, -138)
 sprite_frames = SubResource("SpriteFrames_4ceeq")
 autoplay = "default"
-frame_progress = 0.328598
+frame_progress = 0.702583
 
 [node name="Space" type="AnimatedSprite2D" parent="TutorialSprites"]
 position = Vector2(53, -111)
 sprite_frames = SubResource("SpriteFrames_16sqp")
-frame_progress = 0.547062
+frame_progress = 0.921047
 
 [connection signal="child_entered_tree" from="." to="Player" method="_on_game_child_entered_tree"]
