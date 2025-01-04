@@ -10,12 +10,14 @@ extends Node2D
 @onready var viewport_size: Vector2
 @onready var screen_center: Vector2
 @onready var tutorial_margin: float = 100.0
-@onready var tutorial_group = $TutorialSprites
-@onready var key_w = $TutorialSprites/W as AnimatedSprite2D
-@onready var key_a = $TutorialSprites/A as AnimatedSprite2D
-@onready var key_s = $TutorialSprites/S as AnimatedSprite2D
-@onready var key_d = $TutorialSprites/D as AnimatedSprite2D
-@onready var key_jump = $TutorialSprites/Space as AnimatedSprite2D
+@onready var tutorial_layer = $TutorialLayer
+@onready var tutorial_group = $TutorialLayer/TutorialSprites
+@onready var key_w = $TutorialLayer/TutorialSprites/W as AnimatedSprite2D
+@onready var key_a = $TutorialLayer/TutorialSprites/A as AnimatedSprite2D
+@onready var key_s = $TutorialLayer/TutorialSprites/S as AnimatedSprite2D
+@onready var key_d = $TutorialLayer/TutorialSprites/D as AnimatedSprite2D
+@onready var key_jump = $TutorialLayer/TutorialSprites/Space as AnimatedSprite2D
+
 
 var player_can_move = false
 var dialogue_active = false
@@ -33,11 +35,11 @@ var current_tutorial_step = 0
 
 var tutorial_sequence = [
 	{
-		"keys": ["horizontal"],  
+		"keys": ["horizontal"],
 		"sprites": ["a", "d"],
 		"positions": {
-			"a": Vector2(0.3, 0.5),  # Changed from 0.8 to 0.5 for vertical position
-			"d": Vector2(0.7, 0.5)   # Changed from 0.8 to 0.5 for vertical position
+			"a": Vector2(0.2, 0.5),  # 20% from left
+			"d": Vector2(0.8, 0.5)   # 80% from left
 		},
 		"required_actions": ["ui_left", "ui_right"]
 	},
@@ -104,6 +106,9 @@ func _ready():
 			print("DEBUG: Barrier detector signal connected")
 
 	if tutorial_group:
+		tutorial_group.position = Vector2.ZERO
+		tutorial_group.visible = true
+		tutorial_group.modulate.a = 1
 		print("Tutorial group setup:")
 		print("- Position:", tutorial_group.position)
 		print("- Visible:", tutorial_group.visible)
@@ -188,11 +193,11 @@ func initialize_tutorial_sprites():
 		key_jump.modulate.a = 0
 
 func update_screen_dimensions():
+	# Get the actual viewport size
 	viewport_size = get_viewport().get_visible_rect().size
+	print("Viewport size: ", viewport_size)  # Debug line
 	screen_center = viewport_size / 2
-	# Update tutorial positions if they're currently visible
-	if showing_tutorial:
-		show_current_tutorial_step()
+	print("Screen center: ", screen_center)  # Debug line
 
 func show_intro_dialogue():
 	if not dialogue_ui:
@@ -236,67 +241,47 @@ func end_intro_dialogue():
 
 func show_tutorial_sequence():
 	if !is_tutorial_nodes_valid():
-		print("ERROR: Cannot start tutorial - sprites not found!")
+		print("DEBUG: Cannot start tutorial - sprites not found!")
 		return
 		
-	print("DEBUG: Starting tutorial sequence")
+	print("DEBUG: Starting tutorial sequence - Setting showing_tutorial to true")
 	showing_tutorial = true
 	current_tutorial_step = 0
 	show_current_tutorial_step()
 
 func show_current_tutorial_step():
-	print("\n=== TUTORIAL STEP DEBUG ===")
-	print("Current step:", current_tutorial_step)
-	print("Step data:", tutorial_sequence[current_tutorial_step])
-	
-	# Debug viewport and screen info
-	print("\nScreen Info:")
-	print("Viewport size:", viewport_size)
-	print("Screen center:", screen_center)
-	
-	# First hide all keys
+	if current_tutorial_step >= tutorial_sequence.size():
+		print("ERROR: Tutorial step out of bounds!")
+		return
+		
+	# Hide all sprites first
 	hide_all_keys()
-	print("\nAll keys hidden")
 	
 	var step = tutorial_sequence[current_tutorial_step]
 	
-	# Show and animate required keys
-	print("\nAttempting to show sprites:")
+	# Force tutorial group visibility
+	tutorial_group.visible = true
+	tutorial_group.modulate.a = 1
+	
 	for sprite_name in step.sprites:
-		var sprite = get_sprite_for_key(sprite_name) as AnimatedSprite2D
-		print("\nProcessing {sprite_name}:")
-		print("- Sprite reference:", sprite)
-		
-		if sprite and sprite is AnimatedSprite2D:
-			# Debug sprite state before changes
-			print("- Initial state:")
-			print("  - Visible:", sprite.visible)
-			print("  - Modulate:", sprite.modulate)
-			print("  - Position:", sprite.position)
-			print("  - Has frames:", sprite.sprite_frames != null)
+		var sprite = get_sprite_for_key(sprite_name)
+		if sprite:
+			# IMPORTANT: Set both visible AND modulate
+			sprite.visible = true  # Set visibility first
+			sprite.modulate = Color(1, 1, 1, 1)  # Full opacity
 			
 			# Calculate and set position
 			var screen_pos = get_screen_position(step.positions[sprite_name])
 			sprite.position = screen_pos
 			
-			# Make visible
-			sprite.show()
-			sprite.modulate.a = 1
+			print("Sprite %s settings:" % sprite_name)
+			print("- visible: %s" % sprite.visible)
+			print("- modulate: %s" % sprite.modulate)
+			print("- position: %s" % sprite.position)
 			
-			# Debug sprite state after changes
-			print("- After changes:")
-			print("  - Visible:", sprite.visible)
-			print("  - Modulate:", sprite.modulate)
-			print("  - Position:", sprite.position)
-			
-			# Try to play animation
-			if sprite.sprite_frames and sprite.sprite_frames.has_animation("default"):
+			if sprite.sprite_frames:
 				sprite.play("default")
-				print("  - Animation started")
-			else:
-				print("  - WARNING: No 'default' animation found")
-		else:
-			print("ERROR: Invalid sprite reference")
+				print("Playing animation for %s" % sprite_name)
 
 func get_sprite_for_key(key_name: String) -> AnimatedSprite2D:
 	match key_name:
@@ -310,17 +295,39 @@ func get_sprite_for_key(key_name: String) -> AnimatedSprite2D:
 func hide_all_keys():
 	for sprite in [key_w, key_a, key_s, key_d, key_jump]:
 		if sprite:
-			sprite.modulate.a = 0
-			sprite.stop()
+			sprite.stop()  # Stop any running animations
+			sprite.visible = false  # Hide the sprite
+			sprite.modulate = Color(1, 1, 1, 0)  # Make fully transparent
 
 func get_screen_position(factors: Vector2) -> Vector2:
-	return Vector2(
-		viewport_size.x * factors.x,
-		viewport_size.y * factors.y
-	)
+	# Try both potential node paths
+	var dialogue_box = dialogue_ui.get_node_or_null("Dialogue") if dialogue_ui else null
+	if not dialogue_box:
+		dialogue_box = dialogue_ui.get_node_or_null("DialogueBox") if dialogue_ui else null
+		
+	if dialogue_box:
+		var box_pos = dialogue_box.global_position
+		var box_size = dialogue_box.size
+		
+		var pos = Vector2(
+			box_pos.x + (box_size.x * factors.x),
+			box_pos.y + (box_size.y * factors.y)
+		)
+		
+		print("Dialogue box position: ", box_pos)
+		print("Dialogue box size: ", box_size)
+		print("Calculated position within dialogue: ", pos)
+		
+		return pos
+	else:
+		print("ERROR: Could not find dialogue box node. Available children:", 
+			  dialogue_ui.get_children() if dialogue_ui else "dialogue_ui is null")
+		return Vector2.ZERO
 
 func end_tutorial_sequence():
-	print("DEBUG: Ending tutorial sequence")
+	print("DEBUG: Starting end_tutorial_sequence")
+	print("DEBUG: Tutorial state before end:", showing_tutorial)
+	
 	# Stop all animations
 	key_w.stop()
 	key_a.stop()
@@ -334,24 +341,37 @@ func end_tutorial_sequence():
 	key_s.modulate.a = 0
 	key_d.modulate.a = 0
 	key_jump.modulate.a = 0
+	
 	showing_tutorial = false
+	print("DEBUG: Tutorial state after end:", showing_tutorial)
 	
 	# Make sure player can move after tutorial
 	if player and player.has_method("set_can_move"):
 		player.set_can_move(true)
 
 func _input(event):
+	# Add debug prints for input state
+	if event.is_action_pressed("ui_accept"):
+		print("DEBUG: Space pressed")
+		print("DEBUG: Current state - dialogue_active:", dialogue_active)
+		print("DEBUG: Current state - showing_tutorial:", showing_tutorial)
+		print("DEBUG: Current state - current_scene:", current_scene)
+		print("DEBUG: Current state - dialogue_step:", dialogue_step)
+		print("DEBUG: Current state - waiting_for_tutorial_input:", waiting_for_tutorial_input)
+	
 	# Handle tutorial input
 	if waiting_for_tutorial_input and showing_tutorial:
+		print("DEBUG: Caught in tutorial input handler")
 		for action in required_tutorial_actions:
 			if event.is_action_pressed(action):
+				print("DEBUG: Tutorial action detected:", action)
 				waiting_for_tutorial_input = false
 				advance_tutorial()
 				break
 	
 	# Keep existing input handling
 	if event.is_action_pressed("ui_accept") and dialogue_active and not showing_tutorial:
-		print("DEBUG: Advancing dialogue - Scene:", current_scene, " Step:", dialogue_step)
+		print("DEBUG: Dialogue advance triggered")
 		dialogue_step += 1
 		match current_scene:
 			1: show_intro_dialogue()
@@ -414,56 +434,71 @@ func deactivate_barrier():
 
 func show_next_dialogue():
 	print("DEBUG: Starting dialogue step:", dialogue_step, " in scene:", current_scene)
+	print("DEBUG: dialogue_active before:", dialogue_active)
 	
 	if not dialogue_ui:
 		print("DEBUG: Dialogue UI is null!")
 		return
 	
-	dialogue_ui.visible = true  # Ensure UI is visible
+	dialogue_ui.visible = true
 	dialogue_active = true
 	
 	if current_scene == 2:
+		print("DEBUG: Processing scene 2 dialogue, step:", dialogue_step)
 		match dialogue_step:
 			0:
+				print("DEBUG: Showing first truck dialogue")
 				dialogue_ui.trigger_dialogue("(There's the truck!!)")
 			1:
+				print("DEBUG: Showing second truck dialogue")
 				dialogue_ui.trigger_dialogue("Hey!! I still have some trash here!")
-				# Start truck movement and activate barrier immediately
 				start_truck_movement()
 				activate_barrier()
 			2:
+				print("DEBUG: Showing third truck dialogue")
 				dialogue_ui.trigger_dialogue("NOOOOO! Mom is gonna kill me T-T")
 			3:
+				print("DEBUG: Showing fourth truck dialogue")
 				dialogue_ui.trigger_dialogue("(I should just go back home)")
 			_:
+				print("DEBUG: Ending dialogue - no more steps")
 				end_dialogue()
 				return
-				
+	
 	elif current_scene == 3:
+		print("DEBUG: Processing scene 3 dialogue, step:", dialogue_step)
 		match dialogue_step:
 			0:
+				print("DEBUG: Showing first mom dialogue")
 				dialogue_ui.trigger_dialogue("Mom… The garbage truck already left…")
 			1:
+				print("DEBUG: Showing second mom dialogue")
 				dialogue_ui.trigger_dialogue("Mom: Boy if you don't want to end up being the one inside the trash bag instead, then RUN!")
 			2:
+				print("DEBUG: Showing third mom dialogue")
 				dialogue_ui.trigger_dialogue("OKAY CHILL!!!!")
 			3:
+				print("DEBUG: Showing fourth mom dialogue")
 				dialogue_ui.trigger_dialogue("Ugh, what a way to start my morning")
 				deactivate_barrier()
 			_:
+				print("DEBUG: Ending scene 3 dialogue")
 				end_dialogue()
 				return
 
 func end_dialogue():
 	print("DEBUG: Ending dialogue in scene:", current_scene)
+	print("DEBUG: Dialogue step:", dialogue_step)
 	if dialogue_ui:
 		dialogue_ui.hide_dialogue()
 	dialogue_active = false
 	
 	if current_scene == 3:
+		print("DEBUG: Scene 3 dialogue ended, deactivating barrier")
 		deactivate_barrier()
 	
 	if player:
+		print("DEBUG: Re-enabling player movement")
 		player.set_can_move(true)
 
 func start_truck_movement():
@@ -484,6 +519,17 @@ func _on_scene3_body_entered(body):
 
 func on_interaction_scene2():
 	if not has_triggered_scene2:
+		print("DEBUG: Entering scene2 interaction")
+		print("DEBUG: Tutorial state before:", showing_tutorial)
+		
+		# Force end tutorial if it's still active
+		if showing_tutorial:
+			print("DEBUG: Force ending tutorial sequence")
+			end_tutorial_sequence()
+		
+		showing_tutorial = false  # Force it false anyway
+		print("DEBUG: Tutorial state after:", showing_tutorial)
+		
 		current_scene = 2
 		dialogue_step = 0
 		dialogue_active = true
@@ -513,14 +559,40 @@ func on_interaction_scene3():
 		dialogue_step = 0
 		dialogue_active = true
 		has_triggered_scene3 = true
+		
+		# Make sure player movement is disabled
 		if player:
+			print("DEBUG: Disabling player movement")
 			player.set_can_move(false)
-		dialogue_ui.visible = true  # Ensure UI is visible
-		show_next_dialogue()
+		else:
+			print("DEBUG: Player node not found!")
+			
+		# Make sure dialogue UI is properly set up
+		if dialogue_ui:
+			print("DEBUG: Setting up dialogue UI")
+			dialogue_ui.visible = true
+			show_next_dialogue()
+		else:
+			print("DEBUG: Dialogue UI is null!")
 
 func advance_tutorial():
+	print("DEBUG: Advancing tutorial from step", current_tutorial_step)
 	current_tutorial_step += 1
 	if current_tutorial_step >= tutorial_sequence.size():
+		print("DEBUG: Tutorial complete, ending sequence")
 		end_tutorial_sequence()
 	else:
 		show_current_tutorial_step()
+
+func debug_sprite_status(sprite: AnimatedSprite2D, name: String):
+	if sprite:
+		print("\nSprite %s Status:" % name)
+		print("- exists: true")
+		print("- visible: %s" % sprite.visible)
+		print("- modulate alpha: %s" % sprite.modulate.a)
+		print("- global position: %s" % sprite.global_position)
+		print("- position: %s" % sprite.position)
+		print("- parent visible: %s" % (sprite.get_parent().visible if sprite.get_parent() else 'no parent'))
+		print("- sprite frames: %s" % (sprite.sprite_frames != null))
+	else:
+		print("Sprite %s is null!" % name)

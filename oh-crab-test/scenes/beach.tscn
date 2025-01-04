@@ -159,4 +159,7 @@ shape = SubResource("RectangleShape2D_prp38")
 position = Vector2(91, -13)
 shape = SubResource("CapsuleShape2D_4yw1c")
 
+[node name="Scene6" parent="." instance=ExtResource("6_4pwoy")]
+position = Vector2(-3.02403, -6.20304)
+
 [connection signal="child_entered_tree" from="." to="Player" method="_on_game_child_entered_tree"]

@@ -3,14 +3,14 @@ extends Node2D
 var story_events = [
 	{
 		"text": ["Hey! Mr. Garbage Man!", "Please slow down!"],
-		"position": Vector2(100, 0),
+		"position": Vector2(100, 134),
 		"type": "dialogue",
 		"speaker": "Nugu",
 		"auto_start": true
 	},
 	{
 		"text": ["PLEASE!! I just want to go to sleep!"],
-		"position": Vector2(200, 0),
+		"position": Vector2(200, 134),
 		"type": "dialogue",
 		"speaker": "Nugu",
 		"trigger_scene_event": "truck_leaving",
@@ -18,14 +18,14 @@ var story_events = [
 	},
 	{
 		"text": ["Usain Bolt please take over my body!!!"],
-		"position": Vector2(300, 0),
+		"position": Vector2(300, 134),
 		"type": "dialogue",
 		"speaker": "Nugu",
 		"auto_play": false
 	},
 	{
 		"text": [" (Oh, there seems to be trash on the ground…I wonder if I can catch up to the truck if I follow it)"],
-		"position": Vector2(400, 0),
+		"position": Vector2(400, 134),
 		"type": "dialogue",
 		"speaker": "Nugu",
 		"auto_play": false,
@@ -33,7 +33,7 @@ var story_events = [
 	},
 	{
 		"text": ["Hey Nugu! Wanna play with us?", "Later!!"],
-		"position": Vector2(500, 0),
+		"position": Vector2(500, 134),
 		"type": "dialogue",
 		"speakers": ["Friend1", "Nugu"],
 		"auto_play": false,
@@ -42,7 +42,7 @@ var story_events = [
 	},
 	{
 		"text": ["Hey kid! Wanna join our coastal cleanup drive-", "MOVE!!"],
-		"position": Vector2(600, 0),
+		"position": Vector2(600, 134),
 		"type": "dialogue",
 		"speakers": ["Stranger1", "Nugu"],
 		"auto_play": false,
@@ -65,17 +65,47 @@ var current_dialogue_active = false
 var can_advance = false
 var input_disabled = false
 
+@export var show_debug_markers: bool = true
+var debug_markers: Array[Node] = []
+
+
 func _ready():
-	setup_interaction_areas()
-	dialogue_system.dialogue_completed.connect(_on_dialogue_completed)
+	# Debug print statements
+	print("Story Manager Ready")
 	if truck:
-		truck.position = Vector2(200, 0)
+		print("Truck found at: ", truck.position)
+	else:
+		print("WARNING: Truck node not found!")
 	
-	# Set up input handling
-	process_mode = Node.PROCESS_MODE_ALWAYS
+	if player:
+		print("Player found")
+	else:
+		print("WARNING: Player not found in group 'player'!")
+		
+	setup_interaction_areas()
+	if show_debug_markers:
+		create_debug_markers()
+	dialogue_system.dialogue_completed.connect(_on_dialogue_completed)
 	
 	await get_tree().create_timer(1.0).timeout
 	start_first_dialogue()
+
+func create_debug_markers():
+	for event in story_events:
+		var marker = Sprite2D.new()
+		# You can replace this with your own custom debug texture
+		marker.texture = preload("res://icon.svg")  # Using default Godot icon as fallback
+		marker.scale = Vector2(0.2, 0.2)  # Make it smaller
+		marker.modulate = Color(1, 0, 0, 0.5)  # Semi-transparent red
+		marker.position = event.position
+		marker.z_index = 100  # Make sure it's visible above other elements
+		add_child(marker)
+		debug_markers.append(marker)
+
+func toggle_debug_markers(visible: bool):
+	show_debug_markers = visible
+	for marker in debug_markers:
+		marker.visible = visible
 
 func _unhandled_input(event):
 	# If dialogue is active, consume all jump inputs
@@ -111,28 +141,49 @@ func start_first_dialogue():
 			break
 
 func setup_interaction_areas():
+	print("Setting up interaction areas")  # Debug print
 	for i in story_events.size():
 		var event = story_events[i]
 		var interaction_area = create_interaction_area()
 		interaction_area.position = event.position
-		interaction_area.event_index = i
+		interaction_area.set_meta("event_index", i)  # Use meta instead of custom property
+		
+		# Add visual debug rectangle
+		if show_debug_markers:
+			var debug_rect = ReferenceRect.new()
+			debug_rect.editor_only = false
+			debug_rect.size = Vector2(100, 268)
+			debug_rect.position = Vector2(-50, -134)
+			debug_rect.border_color = Color(0, 1, 0, 0.5)
+			debug_rect.border_width = 2.0
+			interaction_area.add_child(debug_rect)
+		
+		print("Created interaction area at position: ", event.position)  # Debug print
 		add_child(interaction_area)
 
 func create_interaction_area():
-	var area = preload("res://shortcuts/interaction area/interaction_area.gd").new()
+	var area = Area2D.new()  # Changed from preloading script
+	area.collision_layer = 0  # Layer 0
+	area.collision_mask = 2   # Assuming player is on layer 2
+	
 	var collision = CollisionShape2D.new()
 	var shape = RectangleShape2D.new()
 	
-	shape.extents = Vector2(50, 100)
+	shape.extents = Vector2(50, 134)
 	collision.shape = shape
 	area.add_child(collision)
 	
-	area.body_entered.connect(func(body): _on_interaction_area_entered(body, area))
+	# Connect signal using callable
+	area.body_entered.connect(_on_interaction_area_entered.bind(area))
 	return area
 
 func _on_interaction_area_entered(body: Node2D, area: Area2D):
+	print("Body entered interaction area. Body: ", body.name)  # Debug print
+	
 	if body.is_in_group("player"):
-		var event_index = area.event_index
+		print("Player detected in interaction area")  # Debug print
+		var event_index = area.get_meta("event_index")  # Changed to use meta
+		
 		# Don't retrigger if this is the currently active dialogue
 		if current_dialogue_active and current_event_index == event_index:
 			return
@@ -233,7 +284,14 @@ func show_next_line():
 		_on_dialogue_completed()
 
 func animate_truck_leaving():
+	print("Attempting to animate truck leaving")  # Debug print
 	if truck:
+		print("Animating truck from position: ", truck.position)
 		var tween = create_tween()
-		tween.tween_property(truck, "position:x", 500, 1.5)
-		tween.tween_callback(func(): truck.queue_free())
+		tween.tween_property(truck, "position:x", truck.position.x + 300, 1.5)
+		tween.finished.connect(func(): 
+			print("Truck animation completed")
+			truck.queue_free()
+		)
+	else:
+		print("ERROR: Cannot animate truck - truck node not found!")

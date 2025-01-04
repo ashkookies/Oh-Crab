@@ -149,7 +149,7 @@ collision_layer = 2
 script = ExtResource("1_dic3n")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
-z_index = 5
+z_index = 1
 position = Vector2(0, -16)
 sprite_frames = SubResource("SpriteFrames_xoxfn")
 animation = &"jump_left"

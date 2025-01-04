@@ -1,0 +1,107 @@
+[gd_scene load_steps=10 format=3 uid="uid://8yyv48tio28y"]
+
+[ext_resource type="Texture2D" uid="uid://dgh38nkhfh2s7" path="res://assets/sprites/neighborhood/background/ruralparallaxsky.png" id="1_4plwe"]
+[ext_resource type="Texture2D" uid="uid://blhlyde0mtyvn" path="res://assets/sprites/neighborhood/background/ruralparallaxclouds.png" id="2_ogmnp"]
+[ext_resource type="Texture2D" uid="uid://cs0yuu6s80fp5" path="res://assets/sprites/neighborhood/background/ruralparallaxmountainback.png" id="2_quc5h"]
+[ext_resource type="Texture2D" uid="uid://qtvftqij3wte" path="res://assets/sprites/neighborhood/background/ruralparallaxmountainback2.png" id="3_vje2q"]
+[ext_resource type="Texture2D" uid="uid://dvuwpullco478" path="res://assets/sprites/neighborhood/background/ruralparallaxmountain.png" id="5_nk0ic"]
+[ext_resource type="Texture2D" uid="uid://cxsdhbt4m4ga3" path="res://assets/sprites/neighborhood/background/ruralparallaxvillage.png" id="6_b84d7"]
+[ext_resource type="Texture2D" uid="uid://d2mbby5jl5ghm" path="res://assets/sprites/neighborhood/background/ruralparallaxriver.png" id="7_4vvea"]
+[ext_resource type="Texture2D" uid="uid://dxsbqhsf64pcw" path="res://assets/sprites/neighborhood/background/ruralparallaxriverskyredlex.png" id="8_gasut"]
+[ext_resource type="Texture2D" uid="uid://dvbe8aiudyhjk" path="res://assets/sprites/neighborhood/background/ruralparallaxriverfront.png" id="9_iu12c"]
+
+[node name="Parallax" type="Node2D"]
+
+[node name="ParallaxBackground" type="ParallaxBackground" parent="."]
+scale = Vector2(0.25, 0.25)
+transform = Transform2D(0.25, 0, 0, 0.25, 0, 0)
+
+[node name="Sky" type="ParallaxLayer" parent="ParallaxBackground"]
+texture_filter = 1
+scale = Vector2(0.5, 0.5)
+motion_scale = Vector2(0.2, 0.2)
+motion_mirroring = Vector2(320, 0)
+
+[node name="Sprite2D" type="Sprite2D" parent="ParallaxBackground/Sky"]
+texture = ExtResource("1_4plwe")
+centered = false
+
+[node name="Clouds" type="ParallaxLayer" parent="ParallaxBackground"]
+texture_filter = 1
+scale = Vector2(0.5, 0.5)
+motion_scale = Vector2(0.2, 0.2)
+motion_mirroring = Vector2(320, 0)
+
+[node name="Sprite2D" type="Sprite2D" parent="ParallaxBackground/Clouds"]
+texture = ExtResource("2_ogmnp")
+centered = false
+
+[node name="MountainBack2" type="ParallaxLayer" parent="ParallaxBackground"]
+texture_filter = 1
+scale = Vector2(0.5, 0.5)
+motion_scale = Vector2(0.2, 0.2)
+motion_mirroring = Vector2(320, 0)
+
+[node name="Sprite2D" type="Sprite2D" parent="ParallaxBackground/MountainBack2"]
+texture = ExtResource("3_vje2q")
+centered = false
+
+[node name="MountainBack" type="ParallaxLayer" parent="ParallaxBackground"]
+texture_filter = 1
+scale = Vector2(0.5, 0.5)
+motion_scale = Vector2(0.2, 0.2)
+motion_mirroring = Vector2(320, 0)
+
+[node name="Sprite2D" type="Sprite2D" parent="ParallaxBackground/MountainBack"]
+texture = ExtResource("2_quc5h")
+centered = false
+
+[node name="Mountain" type="ParallaxLayer" parent="ParallaxBackground"]
+texture_filter = 1
+scale = Vector2(0.5, 0.5)
+motion_scale = Vector2(0.2, 0.2)
+motion_mirroring = Vector2(320, 0)
+
+[node name="Sprite2D" type="Sprite2D" parent="ParallaxBackground/Mountain"]
+texture = ExtResource("5_nk0ic")
+centered = false
+
+[node name="Village" type="ParallaxLayer" parent="ParallaxBackground"]
+texture_filter = 1
+scale = Vector2(0.5, 0.5)
+motion_scale = Vector2(0.2, 0.2)
+motion_mirroring = Vector2(320, 0)
+
+[node name="Sprite2D" type="Sprite2D" parent="ParallaxBackground/Village"]
+texture = ExtResource("6_b84d7")
+centered = false
+
+[node name="River" type="ParallaxLayer" parent="ParallaxBackground"]
+texture_filter = 1
+scale = Vector2(0.5, 0.5)
+motion_scale = Vector2(0.2, 0.2)
+motion_mirroring = Vector2(320, 0)
+
+[node name="Sprite2D" type="Sprite2D" parent="ParallaxBackground/River"]
+texture = ExtResource("7_4vvea")
+centered = false
+
+[node name="RiverReflection" type="ParallaxLayer" parent="ParallaxBackground"]
+texture_filter = 1
+scale = Vector2(0.5, 0.5)
+motion_scale = Vector2(0.2, 0.2)
+motion_mirroring = Vector2(320, 0)
+
+[node name="Sprite2D" type="Sprite2D" parent="ParallaxBackground/RiverReflection"]
+texture = ExtResource("8_gasut")
+centered = false
+
+[node name="Riverfront" type="ParallaxLayer" parent="ParallaxBackground"]
+texture_filter = 1
+scale = Vector2(0.5, 0.5)
+motion_scale = Vector2(0.2, 0.2)
+motion_mirroring = Vector2(320, 0)
+
+[node name="Sprite2D" type="Sprite2D" parent="ParallaxBackground/Riverfront"]
+texture = ExtResource("9_iu12c")
+centered = false
