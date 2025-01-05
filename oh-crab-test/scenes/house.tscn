@@ -1642,7 +1642,7 @@ animations = [{
 script = ExtResource("1_tykfn")
 
 [node name="Player" parent="." instance=ExtResource("2_lfrv6")]
-position = Vector2(-57, -58)
+position = Vector2(430, 15)
 collision_layer = 3
 
 [node name="Camera2D" type="Camera2D" parent="Player"]
@@ -1702,7 +1702,7 @@ position = Vector2(-145, 9)
 flip_horizontally = true
 
 [node name="Truck" parent="." instance=ExtResource("7_odt6c")]
-position = Vector2(345, -21)
+position = Vector2(637, -22)
 
 [node name="Scene2" parent="." instance=ExtResource("8_48tf7")]
 position = Vector2(0, 150)

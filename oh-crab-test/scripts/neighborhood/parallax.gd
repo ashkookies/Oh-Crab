@@ -1,58 +1,57 @@
 extends ParallaxBackground
 
 @export var scroll_speed: float = 100.0
-@export var sprite_scale: float = 1.0
-
-# Define specific motion scales for each layer type
-const BACKGROUND_SCALE = 0.2  # Sky and clouds
-const MIDGROUND_SCALE = 0.5   # Mountains and houses
-const FOREGROUND_SCALE = 0.8  # Front elements
 
 func _ready():
-	await get_tree().process_frame
 	adjust_all_layers()
-	get_tree().root.size_changed.connect(adjust_all_layers)  # Changed to connect directly to adjust_all_layers
-
-func get_all_parallax_layers() -> Array:
-	var layers = []
-	for child in get_children():
-		if child is ParallaxLayer:
-			layers.append(child)
-	return layers
+	get_tree().root.size_changed.connect(adjust_all_layers)
 
 func adjust_all_layers():
 	var viewport_size = get_viewport().get_visible_rect().size
 	
-	for i in range(get_all_parallax_layers().size()):
-		var layer = get_all_parallax_layers()[i]
+	for layer in get_children():
+		if not layer is ParallaxLayer:
+			continue
+			
 		var sprite = get_sprite_from_layer(layer)
-		if sprite and sprite.texture:
-			var texture_size = sprite.texture.get_size()
+		if not sprite or not sprite.texture:
+			continue
 			
-			# Set motion scale based on layer position
-			match i:
-				0: # Background (sky/clouds)
-					layer.motion_scale = Vector2(BACKGROUND_SCALE, 1)
-				1: # Midground (mountains/houses)
-					layer.motion_scale = Vector2(MIDGROUND_SCALE, 1)
-				_: # Foreground and other layers
-					layer.motion_scale = Vector2(FOREGROUND_SCALE, 1)
+		var texture_size = sprite.texture.get_size()
+		
+		# Set different motion scales based on layer name
+		match layer.name.to_lower():
+			"sky":
+				layer.motion_scale.x = 0.0
+			"clouds":
+				layer.motion_scale.x = 0.1
+			"mountainback2", "mountainback":
+				layer.motion_scale.x = 0.2
+			"mountain":
+				layer.motion_scale.x = 0.3
+			"village":
+				layer.motion_scale.x = 0.4
+			"river", "riverreflection", "riverfront":
+				layer.motion_scale.x = 0.5
+		
+		# Calculate scale to fill screen height
+		var scale_y = viewport_size.y / texture_size.y
+		var scale_x = scale_y  # Keep aspect ratio
+		
+		# If width doesn't cover the viewport, scale up to ensure full coverage
+		if texture_size.x * scale_x < viewport_size.x:
+			scale_x = viewport_size.x / texture_size.x
+			scale_y = scale_x  # Keep aspect ratio
 			
-			# Calculate scale
-			sprite.scale = Vector2(sprite_scale, sprite_scale)
-			
-			# Ensure the sprite covers enough area for scrolling both directions
-			var required_width = viewport_size.x / layer.motion_scale.x
-			var repeats = ceil(required_width / (texture_size.x * sprite_scale))
-			
-			# Set mirroring to exactly match the texture size
-			layer.motion_mirroring = Vector2(texture_size.x * sprite_scale, 0)
-			
-			# Position sprite to cover screen in both directions
-			var screen_center = viewport_size.x / 2
-			var texture_center = (texture_size.x * sprite_scale) / 2
-			sprite.position.x = screen_center - texture_center
-			sprite.position.y = 0
+		sprite.scale = Vector2(scale_x, scale_y)
+		
+		# Set mirroring to the scaled texture width
+		layer.motion_mirroring.x = texture_size.x * scale_x
+		
+		# Center the sprite horizontally and vertically
+		sprite.position = Vector2(texture_size.x * scale_x / 2, texture_size.y * scale_y / 2)
+		sprite.centered = true
+		layer.position = Vector2.ZERO
 
 func get_sprite_from_layer(layer: ParallaxLayer) -> Sprite2D:
 	for child in layer.get_children():
@@ -61,7 +60,6 @@ func get_sprite_from_layer(layer: ParallaxLayer) -> Sprite2D:
 	return null
 
 func _process(delta):
-	# Handle scrolling speed
 	var direction = Input.get_axis("ui_left", "ui_right")
-	if direction != 0:
-		scroll_offset.x -= scroll_speed * direction * delta
+	# Change direction to match the intuitive movement
+	scroll_offset.x += scroll_speed * direction * delta

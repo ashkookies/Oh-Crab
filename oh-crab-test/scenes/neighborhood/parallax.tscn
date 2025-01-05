@@ -25,6 +25,7 @@ motion_scale = Vector2(0.2, 0.2)
 motion_mirroring = Vector2(320, 0)
 
 [node name="Sprite2D" type="Sprite2D" parent="ParallaxBackground/Sky"]
+texture_repeat = 2
 texture = ExtResource("1_4plwe")
 centered = false
 
@@ -35,6 +36,7 @@ motion_scale = Vector2(0.2, 0.2)
 motion_mirroring = Vector2(320, 0)
 
 [node name="Sprite2D" type="Sprite2D" parent="ParallaxBackground/Clouds"]
+texture_repeat = 2
 texture = ExtResource("2_ogmnp")
 centered = false
 
@@ -45,6 +47,7 @@ motion_scale = Vector2(0.5, 0.5)
 motion_mirroring = Vector2(320, 0)
 
 [node name="Sprite2D" type="Sprite2D" parent="ParallaxBackground/MountainBack2"]
+texture_repeat = 2
 texture = ExtResource("3_vje2q")
 centered = false
 
@@ -55,6 +58,7 @@ motion_scale = Vector2(0.5, 0.5)
 motion_mirroring = Vector2(320, 0)
 
 [node name="Sprite2D" type="Sprite2D" parent="ParallaxBackground/MountainBack"]
+texture_repeat = 2
 texture = ExtResource("2_quc5h")
 centered = false
 
@@ -65,6 +69,7 @@ motion_scale = Vector2(0.5, 0.5)
 motion_mirroring = Vector2(320, 0)
 
 [node name="Sprite2D" type="Sprite2D" parent="ParallaxBackground/Mountain"]
+texture_repeat = 2
 texture = ExtResource("5_nk0ic")
 centered = false
 
@@ -75,6 +80,7 @@ motion_scale = Vector2(0.5, 0.5)
 motion_mirroring = Vector2(320, 0)
 
 [node name="Sprite2D" type="Sprite2D" parent="ParallaxBackground/Village"]
+texture_repeat = 2
 texture = ExtResource("6_b84d7")
 centered = false
 
@@ -85,6 +91,7 @@ motion_scale = Vector2(0.8, 0.8)
 motion_mirroring = Vector2(320, 0)
 
 [node name="Sprite2D" type="Sprite2D" parent="ParallaxBackground/River"]
+texture_repeat = 2
 texture = ExtResource("7_4vvea")
 centered = false
 
@@ -95,6 +102,7 @@ motion_scale = Vector2(0.8, 0.8)
 motion_mirroring = Vector2(320, 0)
 
 [node name="Sprite2D" type="Sprite2D" parent="ParallaxBackground/RiverReflection"]
+texture_repeat = 2
 texture = ExtResource("8_gasut")
 centered = false
 
@@ -105,5 +113,6 @@ motion_scale = Vector2(0.8, 0.8)
 motion_mirroring = Vector2(320, 0)
 
 [node name="Sprite2D" type="Sprite2D" parent="ParallaxBackground/RiverFront"]
+texture_repeat = 2
 texture = ExtResource("9_iu12c")
 centered = false

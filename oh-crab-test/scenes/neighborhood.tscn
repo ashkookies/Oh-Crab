@@ -136,6 +136,7 @@ shape = SubResource("RectangleShape2D_prp38")
 
 [node name="Player" parent="." instance=ExtResource("1_amh3c")]
 position = Vector2(249, 146)
+collision_layer = 3
 
 [node name="Camera2D" type="Camera2D" parent="Player"]
 position = Vector2(2, -17)
