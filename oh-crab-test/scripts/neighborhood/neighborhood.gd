@@ -11,7 +11,7 @@ var story_events = [
 	{
 		"text": ["PLEASE!! I just want to go to sleep!"],
 		"position": Vector2(350, 134),
-		"type": "dialogue",
+		"type": "dia logue",
 		"speaker": "Nugu",
 		"trigger_scene_event": "truck_leaving",
 		"auto_play": false

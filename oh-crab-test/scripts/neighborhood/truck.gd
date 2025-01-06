@@ -25,21 +25,12 @@ func _ready():
 	print("Truck initialized at position: ", initial_position)
 
 func _physics_process(delta):
-	print("Physics Process - is_player_nearby:", is_player_nearby)
-	print("Physics Process - player:", player)
-	
 	if is_player_nearby and player:
 		var distance_to_player = global_position.distance_to(player.global_position)
-		print("Distance to player:", distance_to_player)
-		print("Detection radius:", detection_radius)
 		
 		if distance_to_player <= detection_radius:
 			var direction = sign(global_position.x - player.global_position.x)
 			var target_x = global_position.x + (direction * base_speed * delta)
-			print("Moving truck:")
-			print("- Current position:", global_position.x)
-			print("- Target position:", target_x)
-			print("- Direction:", direction)
 			global_position.x = lerp(global_position.x, target_x, smooth_factor)
 
 func _on_detection_area_body_entered(body):

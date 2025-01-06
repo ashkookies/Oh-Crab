@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://bt1v3k0byoe5m"]
+[gd_scene load_steps=14 format=3 uid="uid://bt1v3k0byoe5m"]
 
 [ext_resource type="PackedScene" uid="uid://b4r4qhmasmabq" path="res://scenes/player.tscn" id="1_amh3c"]
 [ext_resource type="Script" path="res://scripts/neighborhood/neighborhood.gd" id="1_xduly"]
@@ -6,6 +6,8 @@
 [ext_resource type="PackedScene" uid="uid://jyxkmjclblfm" path="res://scenes/dialogue.tscn" id="5_kfw3v"]
 [ext_resource type="Texture2D" uid="uid://b702fk7ugea82" path="res://assets/sprites/neighborhood/rock.png" id="6_mhhua"]
 [ext_resource type="PackedScene" uid="uid://8yyv48tio28y" path="res://scenes/neighborhood/parallax.tscn" id="6_ti8gp"]
+[ext_resource type="PackedScene" uid="uid://c17a1c53ccofp" path="res://shortcuts/scene transition/scene_transition.tscn" id="7_38ysq"]
+[ext_resource type="PackedScene" uid="uid://cvpkttunkn2nj" path="res://shortcuts/interaction area/interaction_area.tscn" id="7_hljy8"]
 
 [sub_resource type="TileMapPattern" id="TileMapPattern_kjhn6"]
 tile_data = PackedInt32Array(0, 65536, 4, 65536, 65536, 4, 131072, 65536, 4, 196608, 65536, 4, 262144, 65536, 4, 327680, 65536, 4, 393216, 65536, 4, 1, 65536, 4, 65537, 65536, 4, 131073, 65536, 4, 196609, 65536, 4, 262145, 65536, 4, 327681, 65536, 4, 393217, 65536, 4, 2, 65536, 4, 65538, 65536, 4, 131074, 65536, 4, 196610, 65536, 4, 262146, 65536, 4, 327682, 65536, 4, 393218, 65536, 4, 3, 65536, 4, 65539, 65536, 4, 131075, 65536, 4, 196611, 65536, 4, 262147, 65536, 4, 327683, 65536, 4, 393219, 65536, 4, 4, 65536, 4, 65540, 65536, 4, 131076, 65536, 4, 196612, 65536, 4, 262148, 65536, 4, 327684, 65536, 4, 393220, 65536, 4, 5, 65536, 4, 65541, 65536, 4, 131077, 65536, 4, 196613, 65536, 4, 262149, 65536, 4, 327685, 65536, 4, 393221, 65536, 4, 6, 65536, 4, 65542, 65536, 4, 131078, 65536, 4, 196614, 65536, 4, 262150, 65536, 4, 327686, 65536, 4, 393222, 65536, 4, 7, 65536, 4, 65543, 65536, 4, 131079, 65536, 4, 196615, 65536, 4, 262151, 65536, 4, 327687, 65536, 4, 393223, 65536, 4, 8, 65536, 4, 65544, 65536, 4, 131080, 65536, 4, 196616, 65536, 4, 262152, 65536, 4, 327688, 65536, 4, 393224, 65536, 4, 9, 65536, 4, 65545, 65536, 4, 131081, 65536, 4, 196617, 65536, 4, 262153, 65536, 4, 327689, 65536, 4, 393225, 65536, 4, 10, 65536, 4, 65546, 65536, 4, 131082, 65536, 4, 196618, 65536, 4, 262154, 65536, 4, 327690, 65536, 4, 393226, 65536, 4, 11, 65536, 4, 65547, 65536, 4, 131083, 65536, 4, 196619, 65536, 4, 262155, 65536, 4, 327691, 65536, 4, 393227, 65536, 4, 12, 65536, 4, 65548, 65536, 4, 131084, 65536, 4, 196620, 65536, 4, 262156, 65536, 4, 327692, 65536, 4, 393228, 65536, 4, 13, 65536, 4, 65549, 65536, 4, 131085, 65536, 4, 196621, 65536, 4, 262157, 65536, 4, 327693, 65536, 4, 393229, 65536, 4)
@@ -112,6 +114,8 @@ pattern_0 = SubResource("TileMapPattern_kjhn6")
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_prp38"]
 size = Vector2(15, 314)
 
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_4uhwp"]
+
 [node name="Neighborhood" type="Node2D"]
 script = ExtResource("1_xduly")
 
@@ -132,17 +136,27 @@ position = Vector2(451, 112)
 position = Vector2(-72, 19)
 shape = SubResource("RectangleShape2D_prp38")
 
-[node name="Parallax" parent="." instance=ExtResource("6_ti8gp")]
-
 [node name="Player" parent="." instance=ExtResource("1_amh3c")]
 position = Vector2(249, 146)
 collision_layer = 3
 
-[node name="Camera2D" type="Camera2D" parent="Player"]
+[node name="Camera2D" type="Camera2D" parent="Player" groups=["camera"]]
 position = Vector2(2, -17)
 zoom = Vector2(4, 4)
 limit_left = -65
 limit_bottom = 100000
-limit_smoothed = true
 position_smoothing_enabled = true
 editor_draw_limits = true
+
+[node name="Parallax" parent="Player/Camera2D" instance=ExtResource("6_ti8gp")]
+position = Vector2(-251, -129)
+
+[node name="InteractionArea" parent="." instance=ExtResource("7_hljy8")]
+position = Vector2(904, 3)
+
+[node name="Node" parent="InteractionArea" instance=ExtResource("7_38ysq")]
+next_scene_path = "res://scenes/beach.tscn"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="InteractionArea"]
+position = Vector2(107, 128)
+shape = SubResource("CapsuleShape2D_4uhwp")

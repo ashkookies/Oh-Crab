@@ -1,4 +1,4 @@
-[gd_scene load_steps=64 format=3 uid="uid://cla18fx32rot5"]
+[gd_scene load_steps=65 format=3 uid="uid://cla18fx32rot5"]
 
 [ext_resource type="Script" path="res://scripts/neighborhood/house.gd" id="1_tykfn"]
 [ext_resource type="PackedScene" uid="uid://b4r4qhmasmabq" path="res://scenes/player.tscn" id="2_lfrv6"]
@@ -16,6 +16,7 @@
 [ext_resource type="Script" path="res://scripts/neighborhood/trash_barrier_controller.gd" id="13_gfd2o"]
 [ext_resource type="Script" path="res://scripts/dialogue.gd" id="14_rtqj7"]
 [ext_resource type="Texture2D" uid="uid://bt1yekrapyunl" path="res://assets/sprites/neighborhood/keyboard.png" id="15_6ctje"]
+[ext_resource type="PackedScene" uid="uid://8yyv48tio28y" path="res://scenes/neighborhood/parallax.tscn" id="17_esh8g"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_2mtrj"]
 texture = ExtResource("3_cy6jt")
@@ -1642,7 +1643,7 @@ animations = [{
 script = ExtResource("1_tykfn")
 
 [node name="Player" parent="." instance=ExtResource("2_lfrv6")]
-position = Vector2(430, 15)
+position = Vector2(-61, -57)
 collision_layer = 3
 
 [node name="Camera2D" type="Camera2D" parent="Player"]
@@ -1702,7 +1703,7 @@ position = Vector2(-145, 9)
 flip_horizontally = true
 
 [node name="Truck" parent="." instance=ExtResource("7_odt6c")]
-position = Vector2(637, -22)
+position = Vector2(384, -21)
 
 [node name="Scene2" parent="." instance=ExtResource("8_48tf7")]
 position = Vector2(0, 150)
@@ -1751,7 +1752,6 @@ position = Vector2(-184, -60)
 shape = SubResource("RectangleShape2D_sf8pj")
 
 [node name="Mom" type="Node2D" parent="."]
-visible = false
 position = Vector2(12, 17)
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Mom"]
@@ -1820,5 +1820,7 @@ frame_progress = 0.618085
 position = Vector2(-47, 446)
 sprite_frames = SubResource("SpriteFrames_16sqp")
 frame_progress = 0.836555
+
+[node name="Parallax" parent="." instance=ExtResource("17_esh8g")]
 
 [connection signal="child_entered_tree" from="." to="Player" method="_on_game_child_entered_tree"]
