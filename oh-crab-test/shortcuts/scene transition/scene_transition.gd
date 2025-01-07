@@ -4,7 +4,6 @@ class_name SceneTransition
 
 # Reference the autoloaded singleton
 @onready var scene_manager = get_node("/root/SceneManager")
-
 @export var next_scene_path: String = ""
 @export var transition_delay: float = 0.0
 
@@ -14,15 +13,20 @@ func _ready() -> void:
 	if not interaction_area is InteractionArea:
 		push_error("SceneTransition must be a child of an InteractionArea!")
 		return
-		
+	
 	# Set up the transition callback
-	interaction_area.on_interaction = func():
-		if transition_delay > 0:
-			get_tree().create_timer(transition_delay).timeout.connect(
-				func(): change_scene()
-			)
-		else:
-			change_scene()
+	if interaction_area.has_method("set_interaction_callback"):
+		interaction_area.set_interaction_callback(
+			func():
+				if transition_delay > 0:
+					get_tree().create_timer(transition_delay).timeout.connect(
+						func(): change_scene()
+					)
+				else:
+					change_scene()
+		)
+	else:
+		push_error("InteractionArea missing set_interaction_callback method!")
 
 func change_scene() -> void:
 	if next_scene_path.is_empty():

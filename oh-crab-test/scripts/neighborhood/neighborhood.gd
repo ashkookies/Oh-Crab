@@ -3,29 +3,30 @@ extends Node2D
 var story_events = [
 	{
 		"text": ["Hey! Mr. Garbage Man!", "Please slow down!"],
-		"position": Vector2(250, 134),
+		"position": Vector2(-1000, 134),
 		"type": "dialogue",
 		"speaker": "Nugu",
 		"auto_start": true
 	},
 	{
 		"text": ["PLEASE!! I just want to go to sleep!"],
-		"position": Vector2(350, 134),
-		"type": "dia logue",
+		"position": Vector2(300, 134),
+		"type": "dialogue",
 		"speaker": "Nugu",
 		"trigger_scene_event": "truck_leaving",
 		"auto_play": false
 	},
 	{
 		"text": ["Usain Bolt please take over my body!!!"],
-		"position": Vector2(450, 134),
+		"position": Vector2(425, 134),
 		"type": "dialogue",
 		"speaker": "Nugu",
-		"auto_play": false
+		"auto_play": false,
+		"auto_advance": true
 	},
 	{
 		"text": [" (Oh, there seems to be trash on the ground…I wonder if I can catch up to the truck if I follow it)"],
-		"position": Vector2(550, 134),
+		"position": Vector2(600, 134),
 		"type": "dialogue",
 		"speaker": "Nugu",
 		"auto_play": false,
@@ -33,7 +34,7 @@ var story_events = [
 	},
 	{
 		"text": ["Hey Nugu! Wanna play with us?", "Later!!"],
-		"position": Vector2(650, 134),
+		"position": Vector2(900, 134),
 		"type": "dialogue",
 		"speakers": ["Friend1", "Nugu"],
 		"auto_play": false,
@@ -42,7 +43,7 @@ var story_events = [
 	},
 	{
 		"text": ["Hey kid! Wanna join our coastal cleanup drive-", "MOVE!!"],
-		"position": Vector2(750, 134),
+		"position": Vector2(1100, 134),
 		"type": "dialogue",
 		"speakers": ["Stranger1", "Nugu"],
 		"auto_play": false,
@@ -133,6 +134,11 @@ func handle_dialogue_advance():
 			_on_dialogue_completed()
 		else:
 			show_next_line()
+			# Auto advance if specified
+			var current_event = story_events[current_event_index]
+			if current_event.get("auto_advance", false):
+				await get_tree().create_timer(0.5).timeout
+				handle_dialogue_advance()
 
 func start_first_dialogue():
 	for i in story_events.size():
@@ -248,15 +254,17 @@ func trigger_event(index: int):
 	dialogue_started.emit()
 	
 	if player:
-		# Set dialogue active state in player
 		if player.has_method("set_dialogue_active"):
 			player.set_dialogue_active(true)
-		
-		# Handle movement restrictions
 		if event.get("restrict_movement", false):
 			enable_player_movement(false)
 	
 	show_next_line()
+	
+	# Auto-trigger truck leaving after showing dialogue
+	if event.get("trigger_scene_event") == "truck_leaving":
+		await get_tree().create_timer(2.0).timeout
+		animate_truck_leaving()
 
 func show_next_line():
 	if current_line_index < current_event_text.size():
@@ -284,14 +292,9 @@ func show_next_line():
 		_on_dialogue_completed()
 
 func animate_truck_leaving():
-	print("Attempting to animate truck leaving")  # Debug print
 	if truck:
-		print("Animating truck from position: ", truck.position)
 		var tween = create_tween()
 		tween.tween_property(truck, "position:x", truck.position.x + 300, 1.5)
-		tween.finished.connect(func(): 
-			print("Truck animation completed")
+		await tween.finished
+		if is_instance_valid(truck):
 			truck.queue_free()
-		)
-	else:
-		print("ERROR: Cannot animate truck - truck node not found!")

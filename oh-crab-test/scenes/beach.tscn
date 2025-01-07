@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://bi7giyhuubq2q"]
+[gd_scene load_steps=13 format=3 uid="uid://bi7giyhuubq2q"]
 
 [ext_resource type="Script" path="res://scripts/beach/beach.gd" id="1_gm35y"]
 [ext_resource type="PackedScene" uid="uid://b4r4qhmasmabq" path="res://scenes/player.tscn" id="2_6po4f"]
@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://cbt4hlv6p03o6" path="res://scenes/neighborhood/truck.tscn" id="4_orxnj"]
 [ext_resource type="PackedScene" uid="uid://jyxkmjclblfm" path="res://scenes/dialogue.tscn" id="5_81uxd"]
 [ext_resource type="PackedScene" uid="uid://cvpkttunkn2nj" path="res://shortcuts/interaction area/interaction_area.tscn" id="6_4pwoy"]
+[ext_resource type="PackedScene" uid="uid://dl1446365d6y5" path="res://scenes/neighborhood/ThrowTrash.tscn" id="7_3ggvx"]
 
 [sub_resource type="TileMapPattern" id="TileMapPattern_kjhn6"]
 tile_data = PackedInt32Array(0, 65536, 4, 65536, 65536, 4, 131072, 65536, 4, 196608, 65536, 4, 262144, 65536, 4, 327680, 65536, 4, 393216, 65536, 4, 1, 65536, 4, 65537, 65536, 4, 131073, 65536, 4, 196609, 65536, 4, 262145, 65536, 4, 327681, 65536, 4, 393217, 65536, 4, 2, 65536, 4, 65538, 65536, 4, 131074, 65536, 4, 196610, 65536, 4, 262146, 65536, 4, 327682, 65536, 4, 393218, 65536, 4, 3, 65536, 4, 65539, 65536, 4, 131075, 65536, 4, 196611, 65536, 4, 262147, 65536, 4, 327683, 65536, 4, 393219, 65536, 4, 4, 65536, 4, 65540, 65536, 4, 131076, 65536, 4, 196612, 65536, 4, 262148, 65536, 4, 327684, 65536, 4, 393220, 65536, 4, 5, 65536, 4, 65541, 65536, 4, 131077, 65536, 4, 196613, 65536, 4, 262149, 65536, 4, 327685, 65536, 4, 393221, 65536, 4, 6, 65536, 4, 65542, 65536, 4, 131078, 65536, 4, 196614, 65536, 4, 262150, 65536, 4, 327686, 65536, 4, 393222, 65536, 4, 7, 65536, 4, 65543, 65536, 4, 131079, 65536, 4, 196615, 65536, 4, 262151, 65536, 4, 327687, 65536, 4, 393223, 65536, 4, 8, 65536, 4, 65544, 65536, 4, 131080, 65536, 4, 196616, 65536, 4, 262152, 65536, 4, 327688, 65536, 4, 393224, 65536, 4, 9, 65536, 4, 65545, 65536, 4, 131081, 65536, 4, 196617, 65536, 4, 262153, 65536, 4, 327689, 65536, 4, 393225, 65536, 4, 10, 65536, 4, 65546, 65536, 4, 131082, 65536, 4, 196618, 65536, 4, 262154, 65536, 4, 327690, 65536, 4, 393226, 65536, 4, 11, 65536, 4, 65547, 65536, 4, 131083, 65536, 4, 196619, 65536, 4, 262155, 65536, 4, 327691, 65536, 4, 393227, 65536, 4, 12, 65536, 4, 65548, 65536, 4, 131084, 65536, 4, 196620, 65536, 4, 262156, 65536, 4, 327692, 65536, 4, 393228, 65536, 4, 13, 65536, 4, 65549, 65536, 4, 131085, 65536, 4, 196621, 65536, 4, 262157, 65536, 4, 327693, 65536, 4, 393229, 65536, 4)
@@ -159,7 +160,7 @@ shape = SubResource("RectangleShape2D_prp38")
 position = Vector2(91, -13)
 shape = SubResource("CapsuleShape2D_4yw1c")
 
-[node name="Scene6" parent="." instance=ExtResource("6_4pwoy")]
-position = Vector2(-3.02403, -6.20304)
+[node name="ThrowTrash" parent="." instance=ExtResource("7_3ggvx")]
+position = Vector2(-35, 1)
 
 [connection signal="child_entered_tree" from="." to="Player" method="_on_game_child_entered_tree"]

@@ -1646,7 +1646,7 @@ script = ExtResource("1_tykfn")
 position = Vector2(-61, -57)
 collision_layer = 3
 
-[node name="Camera2D" type="Camera2D" parent="Player"]
+[node name="Camera2D" type="Camera2D" parent="Player" groups=["camera"]]
 position = Vector2(0, -13)
 zoom = Vector2(4, 4)
 limit_left = -1000
@@ -1654,6 +1654,10 @@ limit_bottom = 120
 limit_smoothed = true
 position_smoothing_enabled = true
 editor_draw_limits = true
+
+[node name="Parallax" parent="Player/Camera2D" instance=ExtResource("17_esh8g")]
+visible = false
+position = Vector2(61, 70)
 
 [node name="Ground" type="TileMap" parent="."]
 tile_set = SubResource("TileSet_kluan")
@@ -1820,7 +1824,5 @@ frame_progress = 0.618085
 position = Vector2(-47, 446)
 sprite_frames = SubResource("SpriteFrames_16sqp")
 frame_progress = 0.836555
-
-[node name="Parallax" parent="." instance=ExtResource("17_esh8g")]
 
 [connection signal="child_entered_tree" from="." to="Player" method="_on_game_child_entered_tree"]

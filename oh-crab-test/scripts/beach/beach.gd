@@ -13,6 +13,18 @@ var current_message_index = 0
 var dialogue_triggered = false
 
 func _ready():
+	var truck = $Truck  # Adjust path if needed
+	
+	if truck:
+		# Disable movement logic without removing script
+		truck.is_player_nearby = false
+		truck.set_physics_process(false)
+		# Optionally, disconnect signals
+		var area = truck.get_node("InteractionArea")
+		if area:
+			area.body_entered.disconnect(truck._on_detection_area_body_entered)
+			area.body_exited.disconnect(truck._on_detection_area_body_exited)
+	
 	if dialogue_system:
 		dialogue_system.dialogue_completed.connect(_on_dialogue_completed)
 	else:

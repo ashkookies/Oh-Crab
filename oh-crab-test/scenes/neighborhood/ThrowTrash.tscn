@@ -1,0 +1,30 @@
+[gd_scene load_steps=5 format=3 uid="uid://dl1446365d6y5"]
+
+[ext_resource type="Script" path="res://scripts/neighborhood/throw_trash.gd" id="1_gckfa"]
+[ext_resource type="Texture2D" uid="uid://c7nyqm0dfdtga" path="res://assets/sprites/neighborhood/Trash.png" id="2_e3jd2"]
+[ext_resource type="Script" path="res://shortcuts/interaction area/interaction_area.gd" id="2_p3p8q"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_mp255"]
+radius = 23.0
+height = 54.0
+
+[node name="RigidBody2D" type="RigidBody2D"]
+script = ExtResource("1_gckfa")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_e3jd2")
+
+[node name="InteractionArea" type="Area2D" parent="."]
+collision_layer = 2
+collision_mask = 2
+script = ExtResource("2_p3p8q")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="InteractionArea"]
+shape = SubResource("CapsuleShape2D_mp255")
+
+[node name="PromptText" type="Label" parent="."]
+offset_left = -61.0
+offset_top = -48.0
+offset_right = 74.0
+offset_bottom = -25.0
+text = "[F] to throw trash"
