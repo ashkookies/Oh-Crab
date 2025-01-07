@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bt1yekrapyunl"
-path="res://.godot/imported/keyboard.png-e3c110f17549e9927672c79a8b3cbc8c.ctex"
+uid="uid://cr2oip5b1t7lv"
+path="res://.godot/imported/mom.png-3a690179638de8c3b75136b1998338f4.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/neighborhood/keyboard.png"
-dest_files=["res://.godot/imported/keyboard.png-e3c110f17549e9927672c79a8b3cbc8c.ctex"]
+source_file="res://assets/sprites/neighborhood/house/mom.png"
+dest_files=["res://.godot/imported/mom.png-3a690179638de8c3b75136b1998338f4.ctex"]
 
 [params]
 

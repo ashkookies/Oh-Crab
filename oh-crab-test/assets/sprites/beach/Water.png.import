@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bv6x2nfurrdxo"
-path="res://.godot/imported/BgHouse.png-2212cbb16571f8a412eca39e17e84615.ctex"
+uid="uid://ddoc3qkny4dlo"
+path="res://.godot/imported/Water.png-acea5bdfb45040c861b597998d228a21.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/neighborhood/BgHouse.png"
-dest_files=["res://.godot/imported/BgHouse.png-2212cbb16571f8a412eca39e17e84615.ctex"]
+source_file="res://assets/sprites/beach/Water.png"
+dest_files=["res://.godot/imported/Water.png-acea5bdfb45040c861b597998d228a21.ctex"]
 
 [params]
 

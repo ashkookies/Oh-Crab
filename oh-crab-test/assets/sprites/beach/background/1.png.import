@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://fx1rmoasto0r"
-path="res://.godot/imported/House.png-6fcee37dfda7ec4ad063783cce052ee8.ctex"
+uid="uid://c3a5w2jchvghb"
+path="res://.godot/imported/1.png-d6baa0d204bc847273da769e6258e6a7.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/neighborhood/House.png"
-dest_files=["res://.godot/imported/House.png-6fcee37dfda7ec4ad063783cce052ee8.ctex"]
+source_file="res://assets/sprites/beach/background/1.png"
+dest_files=["res://.godot/imported/1.png-d6baa0d204bc847273da769e6258e6a7.ctex"]
 
 [params]
 

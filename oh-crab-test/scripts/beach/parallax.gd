@@ -38,7 +38,7 @@ func adjust_all_layers():
 		
 		# Center vertically, align to left
 		sprite.centered = false
-		sprite.position = Vector2(0, -100)
+		sprite.position = Vector2(0, 0)
 		
 		# Adjust motion mirroring for the new scale
 		layer.motion_mirroring.x = texture_size.x * scale_x

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c7nyqm0dfdtga"
-path="res://.godot/imported/Trash.png-4ae8c0aa1f3114e5edca89e109fa14db.ctex"
+uid="uid://dsdf30cj1sg8g"
+path="res://.godot/imported/2.png-69fe3f992cfd1c110074be7e6c6fcbe0.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/neighborhood/Trash.png"
-dest_files=["res://.godot/imported/Trash.png-4ae8c0aa1f3114e5edca89e109fa14db.ctex"]
+source_file="res://assets/sprites/beach/background/2.png"
+dest_files=["res://.godot/imported/2.png-69fe3f992cfd1c110074be7e6c6fcbe0.ctex"]
 
 [params]
 

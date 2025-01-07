@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cr2oip5b1t7lv"
-path="res://.godot/imported/mom.png-ddf3acd8ef5de687960ce3fe06db31cb.ctex"
+uid="uid://c7nyqm0dfdtga"
+path="res://.godot/imported/Trash.png-5ffbb9850bba09e797b9dca988dffc96.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/neighborhood/mom.png"
-dest_files=["res://.godot/imported/mom.png-ddf3acd8ef5de687960ce3fe06db31cb.ctex"]
+source_file="res://assets/sprites/trash/Trash.png"
+dest_files=["res://.godot/imported/Trash.png-5ffbb9850bba09e797b9dca988dffc96.ctex"]
 
 [params]
 

@@ -1,0 +1,32 @@
+[gd_scene load_steps=6 format=3 uid="uid://bpxm5g77c1b3h"]
+
+[ext_resource type="Texture2D" uid="uid://c3a5w2jchvghb" path="res://assets/sprites/beach/background/1.png" id="1_t328u"]
+[ext_resource type="Script" path="res://scripts/beach/parallax.gd" id="1_vd2cx"]
+[ext_resource type="Texture2D" uid="uid://dsdf30cj1sg8g" path="res://assets/sprites/beach/background/2.png" id="2_veb0g"]
+[ext_resource type="Texture2D" uid="uid://bigeo2efwbipr" path="res://assets/sprites/beach/background/3.png" id="3_kaqp2"]
+[ext_resource type="Texture2D" uid="uid://c4n2xdj22puls" path="res://assets/sprites/beach/background/4.png" id="4_yhdxx"]
+
+[node name="Parallax" type="Node2D"]
+
+[node name="ParallaxBackground" type="ParallaxBackground" parent="."]
+script = ExtResource("1_vd2cx")
+
+[node name="Sky" type="ParallaxLayer" parent="ParallaxBackground"]
+
+[node name="Sprite2D" type="Sprite2D" parent="ParallaxBackground/Sky"]
+texture = ExtResource("1_t328u")
+
+[node name="Land" type="ParallaxLayer" parent="ParallaxBackground"]
+
+[node name="Sprite2D" type="Sprite2D" parent="ParallaxBackground/Land"]
+texture = ExtResource("2_veb0g")
+
+[node name="Clouds1" type="ParallaxLayer" parent="ParallaxBackground"]
+
+[node name="Sprite2D" type="Sprite2D" parent="ParallaxBackground/Clouds1"]
+texture = ExtResource("3_kaqp2")
+
+[node name="Clouds2" type="ParallaxLayer" parent="ParallaxBackground"]
+
+[node name="Sprite2D" type="Sprite2D" parent="ParallaxBackground/Clouds2"]
+texture = ExtResource("4_yhdxx")

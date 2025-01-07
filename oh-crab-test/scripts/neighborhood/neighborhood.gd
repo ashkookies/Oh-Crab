@@ -3,14 +3,14 @@ extends Node2D
 var story_events = [
 	{
 		"text": ["Hey! Mr. Garbage Man!", "Please slow down!"],
-		"position": Vector2(-1000, 134),
+		"position": Vector2(-1000, 0),
 		"type": "dialogue",
 		"speaker": "Nugu",
 		"auto_start": true
 	},
 	{
 		"text": ["PLEASE!! I just want to go to sleep!"],
-		"position": Vector2(300, 134),
+		"position": Vector2(300, 10),
 		"type": "dialogue",
 		"speaker": "Nugu",
 		"trigger_scene_event": "truck_leaving",
@@ -18,7 +18,7 @@ var story_events = [
 	},
 	{
 		"text": ["Usain Bolt please take over my body!!!"],
-		"position": Vector2(425, 134),
+		"position": Vector2(425, 10),
 		"type": "dialogue",
 		"speaker": "Nugu",
 		"auto_play": false,
@@ -26,7 +26,7 @@ var story_events = [
 	},
 	{
 		"text": [" (Oh, there seems to be trash on the ground…I wonder if I can catch up to the truck if I follow it)"],
-		"position": Vector2(600, 134),
+		"position": Vector2(600, 10),
 		"type": "dialogue",
 		"speaker": "Nugu",
 		"auto_play": false,
@@ -34,7 +34,7 @@ var story_events = [
 	},
 	{
 		"text": ["Hey Nugu! Wanna play with us?", "Later!!"],
-		"position": Vector2(900, 134),
+		"position": Vector2(900, 10),
 		"type": "dialogue",
 		"speakers": ["Friend1", "Nugu"],
 		"auto_play": false,
@@ -43,7 +43,7 @@ var story_events = [
 	},
 	{
 		"text": ["Hey kid! Wanna join our coastal cleanup drive-", "MOVE!!"],
-		"position": Vector2(1100, 134),
+		"position": Vector2(1100, 10),
 		"type": "dialogue",
 		"speakers": ["Stranger1", "Nugu"],
 		"auto_play": false,

@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://dl1446365d6y5"]
 
 [ext_resource type="Script" path="res://scripts/neighborhood/throw_trash.gd" id="1_gckfa"]
-[ext_resource type="Texture2D" uid="uid://c7nyqm0dfdtga" path="res://assets/sprites/neighborhood/Trash.png" id="2_e3jd2"]
+[ext_resource type="Texture2D" uid="uid://c7nyqm0dfdtga" path="res://assets/sprites/trash/Trash.png" id="2_e3jd2"]
 [ext_resource type="Script" path="res://shortcuts/interaction area/interaction_area.gd" id="2_p3p8q"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_mp255"]
