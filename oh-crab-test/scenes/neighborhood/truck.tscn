@@ -1,41 +1,48 @@
-[gd_scene load_steps=6 format=3 uid="uid://cbt4hlv6p03o6"]
+[gd_scene load_steps=7 format=3 uid="uid://cbt4hlv6p03o6"]
 
-[ext_resource type="Script" path="res://scripts/neighborhood/truck.gd" id="1_ooryt"]
-[ext_resource type="Texture2D" uid="uid://qm05gqoinvhu" path="res://assets/sprites/neighborhood/Truck.png" id="2_pgikl"]
-[ext_resource type="PackedScene" uid="uid://cvpkttunkn2nj" path="res://shortcuts/interaction area/interaction_area.tscn" id="3_g5nek"]
+[ext_resource type="Texture2D" uid="uid://c23mhhlf2gmmg" path="res://assets/sprites/neighborhood/Illustration2.png" id="1_h87lr"]
 
-[sub_resource type="SpriteFrames" id="SpriteFrames_bke0x"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_345nx"]
+atlas = ExtResource("1_h87lr")
+region = Rect2(0, 0, 80, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_mvadk"]
+atlas = ExtResource("1_h87lr")
+region = Rect2(80, 0, 80, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_q3qhw"]
+atlas = ExtResource("1_h87lr")
+region = Rect2(160, 0, 80, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ywd0k"]
+atlas = ExtResource("1_h87lr")
+region = Rect2(240, 0, 80, 48)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_a5tbn"]
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("2_pgikl")
+"texture": SubResource("AtlasTexture_345nx")
 }, {
 "duration": 1.0,
-"texture": ExtResource("2_pgikl")
+"texture": SubResource("AtlasTexture_mvadk")
 }, {
 "duration": 1.0,
-"texture": ExtResource("2_pgikl")
+"texture": SubResource("AtlasTexture_q3qhw")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ywd0k")
 }],
 "loop": true,
 "name": &"default",
-"speed": 5.0
+"speed": 6.0
 }]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_ooiw2"]
-size = Vector2(234, 76)
+[node name="AnimatedSprite2D" type="AnimatedSprite2D"]
+position = Vector2(-0.666668, -33)
+scale = Vector2(1.45833, 1.45833)
+sprite_frames = SubResource("SpriteFrames_a5tbn")
+autoplay = "default"
+frame_progress = 0.397825
 
-[node name="Truck" type="Node2D"]
-script = ExtResource("1_ooryt")
-
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
-sprite_frames = SubResource("SpriteFrames_bke0x")
-
-[node name="InteractionArea" parent="." instance=ExtResource("3_g5nek")]
-position = Vector2(-1.15977, 184.072)
-collision_layer = 3
-collision_mask = 1
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="InteractionArea"]
-light_mask = 3
-position = Vector2(-43.8402, -184.072)
-shape = SubResource("RectangleShape2D_ooiw2")
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
