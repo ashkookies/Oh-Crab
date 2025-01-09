@@ -84,24 +84,10 @@ func _ready():
 		print("WARNING: Player not found in group 'player'!")
 		
 	setup_interaction_areas()
-	if show_debug_markers:
-		create_debug_markers()
 	dialogue_system.dialogue_completed.connect(_on_dialogue_completed)
 	
 	await get_tree().create_timer(1.0).timeout
 	start_first_dialogue()
-
-func create_debug_markers():
-	for event in story_events:
-		var marker = Sprite2D.new()
-		# You can replace this with your own custom debug texture
-		marker.texture = preload("res://icon.svg")  # Using default Godot icon as fallback
-		marker.scale = Vector2(0.2, 0.2)  # Make it smaller
-		marker.modulate = Color(1, 0, 0, 0.5)  # Semi-transparent red
-		marker.position = event.position
-		marker.z_index = 100  # Make sure it's visible above other elements
-		add_child(marker)
-		debug_markers.append(marker)
 
 func toggle_debug_markers(visible: bool):
 	show_debug_markers = visible
@@ -147,24 +133,12 @@ func start_first_dialogue():
 			break
 
 func setup_interaction_areas():
-	print("Setting up interaction areas")  # Debug print
+	print("Setting up interaction areas")
 	for i in story_events.size():
 		var event = story_events[i]
 		var interaction_area = create_interaction_area()
 		interaction_area.position = event.position
-		interaction_area.set_meta("event_index", i)  # Use meta instead of custom property
-		
-		# Add visual debug rectangle
-		if show_debug_markers:
-			var debug_rect = ReferenceRect.new()
-			debug_rect.editor_only = false
-			debug_rect.size = Vector2(100, 268)
-			debug_rect.position = Vector2(-50, -134)
-			debug_rect.border_color = Color(0, 1, 0, 0.5)
-			debug_rect.border_width = 2.0
-			interaction_area.add_child(debug_rect)
-		
-		print("Created interaction area at position: ", event.position)  # Debug print
+		interaction_area.set_meta("event_index", i)
 		add_child(interaction_area)
 
 func create_interaction_area():
