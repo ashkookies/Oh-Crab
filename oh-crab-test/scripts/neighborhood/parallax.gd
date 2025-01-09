@@ -20,14 +20,16 @@ func _ready():
 
 func _process(delta):
 	if camera:
-		# Add an offset to keep coordinates positive
-		var camera_offset = 1000  # Adjust this value based on your game's scale
-		scroll_offset.x = -(camera.global_position.x + camera_offset)
+		# Calculate scroll offset while preserving backgrounds at negative x positions
+		scroll_offset.x = -camera.global_position.x
 		
-		# Adjust all layer positions by the same offset
+		# Ensure each layer maintains its motion_mirroring for both positive and negative directions
 		for layer in get_children():
 			if layer is ParallaxLayer:
-				layer.motion_offset.x = camera_offset
+				var sprite = get_sprite_from_layer(layer)
+				if sprite and sprite.texture:
+					# Make sure motion_mirroring works in both directions
+					layer.motion_mirroring.x = abs(layer.motion_mirroring.x)
 
 func adjust_all_layers():
 	var viewport_size = get_viewport().get_visible_rect().size

@@ -130,6 +130,7 @@ layer_0/tile_data = PackedInt32Array(65563, 65536, 3, 65564, 65536, 3, 65565, 65
 [node name="Truck" parent="." instance=ExtResource("4_7ceft")]
 position = Vector2(288, 14)
 scale = Vector2(1, 1)
+frame_progress = 0.397825
 script = ExtResource("4_hreqa")
 
 [node name="Dialogue" parent="." instance=ExtResource("5_kfw3v")]

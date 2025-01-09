@@ -1713,6 +1713,7 @@ flip_horizontally = true
 [node name="Truck" parent="." instance=ExtResource("7_odt6c")]
 position = Vector2(276.25, -27.25)
 scale = Vector2(1.79375, 1.94792)
+frame_progress = 0.397825
 script = ExtResource("10_x4dmk")
 
 [node name="Scene2" parent="." instance=ExtResource("8_48tf7")]
