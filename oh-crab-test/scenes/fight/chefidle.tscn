@@ -1,0 +1,46 @@
+[gd_scene load_steps=7 format=3 uid="uid://cpn8t3swiwtgc"]
+
+[ext_resource type="Texture2D" uid="uid://b07nme01w8ti0" path="res://assets/sprites/fight/chef idle.png" id="1_dw1re"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_sdk0p"]
+atlas = ExtResource("1_dw1re")
+region = Rect2(32, 0, 16, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_nqbrk"]
+atlas = ExtResource("1_dw1re")
+region = Rect2(16, 0, 16, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2y6qp"]
+atlas = ExtResource("1_dw1re")
+region = Rect2(0, 0, 16, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_st4h8"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_sdk0p")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_nqbrk")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2y6qp")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_f482v"]
+size = Vector2(14, 31)
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D"]
+position = Vector2(0, -2)
+sprite_frames = SubResource("SpriteFrames_st4h8")
+autoplay = "default"
+frame_progress = 0.788665
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+visible = false
+position = Vector2(1, -0.5)
+shape = SubResource("RectangleShape2D_f482v")

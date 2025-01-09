@@ -153,11 +153,6 @@ sprite_frames = SubResource("SpriteFrames_b721g")
 animation = &"swipe"
 autoplay = "idle"
 
-[node name="Camera2D" type="Camera2D" parent="AnimatedSprite2D"]
-position = Vector2(0, -9)
-zoom = Vector2(4, 4)
-limit_bottom = 160
-
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 z_index = 5
 position = Vector2(0, -4.75)
