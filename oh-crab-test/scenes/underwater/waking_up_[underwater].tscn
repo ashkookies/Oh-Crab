@@ -1,5 +1,6 @@
-[gd_scene load_steps=12 format=3 uid="uid://d2kha2a3kn7gm"]
+[gd_scene load_steps=13 format=3 uid="uid://d2kha2a3kn7gm"]
 
+[ext_resource type="Script" path="res://scenes/underwater/waking_up_[underwater].gd" id="1_20iab"]
 [ext_resource type="Texture2D" uid="uid://btfvgx88q6njl" path="res://assets/sprites/underwater/parallax/sea_background.png" id="1_l6tqw"]
 [ext_resource type="PackedScene" uid="uid://c1nivpev8tong" path="res://scenes/underwater/player_crab.tscn" id="1_stebn"]
 [ext_resource type="Texture2D" uid="uid://cu1ivw41tkxt0" path="res://assets/sprites/underwater/parallax/farground.png" id="2_8s6lp"]
@@ -268,6 +269,7 @@ sources/0 = SubResource("TileSetAtlasSource_bxkii")
 sources/1 = SubResource("TileSetAtlasSource_8a121")
 
 [node name="Waking up [UNDERWATER]" type="Node2D"]
+script = ExtResource("1_20iab")
 
 [node name="Crab" parent="." instance=ExtResource("1_stebn")]
 position = Vector2(174, 112)
