@@ -1,8 +1,9 @@
-[gd_scene load_steps=14 format=3 uid="uid://bt1v3k0byoe5m"]
+[gd_scene load_steps=15 format=3 uid="uid://bt1v3k0byoe5m"]
 
 [ext_resource type="PackedScene" uid="uid://b4r4qhmasmabq" path="res://scenes/player.tscn" id="1_amh3c"]
 [ext_resource type="Script" path="res://scripts/neighborhood/neighborhood.gd" id="1_xduly"]
 [ext_resource type="PackedScene" uid="uid://cbt4hlv6p03o6" path="res://scenes/neighborhood/truck.tscn" id="4_7ceft"]
+[ext_resource type="Script" path="res://scripts/neighborhood/truck.gd" id="4_hreqa"]
 [ext_resource type="PackedScene" uid="uid://jyxkmjclblfm" path="res://scenes/dialogue.tscn" id="5_kfw3v"]
 [ext_resource type="Texture2D" uid="uid://b702fk7ugea82" path="res://assets/sprites/neighborhood/rock.png" id="6_mhhua"]
 [ext_resource type="PackedScene" uid="uid://8yyv48tio28y" path="res://scenes/neighborhood/parallax.tscn" id="6_ti8gp"]
@@ -128,6 +129,8 @@ layer_0/tile_data = PackedInt32Array(65537, 65536, 3, 65538, 65536, 3, 65539, 65
 
 [node name="Truck" parent="." instance=ExtResource("4_7ceft")]
 position = Vector2(288, 14)
+scale = Vector2(1, 1)
+script = ExtResource("4_hreqa")
 
 [node name="Dialogue" parent="." instance=ExtResource("5_kfw3v")]
 
@@ -143,6 +146,7 @@ collision_layer = 3
 
 [node name="Camera2D" type="Camera2D" parent="Player" groups=["camera"]]
 position = Vector2(2, -17)
+offset = Vector2(0, -20)
 zoom = Vector2(4, 4)
 limit_left = 0
 limit_bottom = 100000
