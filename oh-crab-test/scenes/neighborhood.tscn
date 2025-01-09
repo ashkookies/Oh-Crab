@@ -117,6 +117,7 @@ size = Vector2(15, 377)
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_4uhwp"]
 
 [node name="Neighborhood" type="Node2D"]
+position = Vector2(1, 0)
 script = ExtResource("1_xduly")
 
 [node name="Ground" type="TileMap" parent="."]
