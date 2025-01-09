@@ -1579,7 +1579,7 @@ layer_1/tile_data = PackedInt32Array(131070, 0, 0, 131071, 0, 0, 65536, 0, 0, 65
 [node name="killzone" parent="." instance=ExtResource("5_tve7y")]
 position = Vector2(380, 113)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="killzone"]
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="killzone"]
 shape = SubResource("WorldBoundaryShape2D_r8mjf")
 
 [node name="Coins" type="Node" parent="."]
