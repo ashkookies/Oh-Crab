@@ -3,7 +3,6 @@
 [sub_resource type="GDScript" id="GDScript_bdg0p"]
 script/source = "extends CanvasLayer
 
-# Add the signal declaration at the top
 signal dialogue_completed
 
 @onready var textbox_container = $TextboxContainer
@@ -18,11 +17,15 @@ var current_text: String = \"\"
 var displayed_text: String = \"\"
 var is_text_completed: bool = false
 var dialogue_active: bool = false
+var crab_node: Node = null
 
 func _ready():
 	textbox_container.hide()
 	dialogue_active = false
 	reset_dialogue_state()
+	
+	# Find the Crab node
+	crab_node = get_parent().get_node(\"Crab\")
 	
 	if text_speed > 0:
 		process_mode = Node.PROCESS_MODE_ALWAYS
@@ -49,12 +52,17 @@ func show_dialogue(text: String):
 	is_text_completed = false
 	dialogue_active = true
 	textbox_container.show()
+	if crab_node:
+		crab_node.lock_movement()
 	print(\"DEBUG: Showing dialogue: \", text)
 
 func hide_dialogue():
 	dialogue_active = false
 	textbox_container.hide()
 	reset_dialogue_state()
+	if crab_node:
+		crab_node.unlock_movement()
+	print(\"DEBUG: Dialogue hidden.\")
 	# Emit the signal when dialogue is hidden
 	dialogue_completed.emit()
 
@@ -68,7 +76,6 @@ func complete_text():
 		text_label.text = displayed_text
 		is_text_completed = true
 
-# Add this function to handle advancing dialogue
 func advance_dialogue():
 	if is_text_completed:
 		hide_dialogue()  # This will emit the dialogue_completed signal
