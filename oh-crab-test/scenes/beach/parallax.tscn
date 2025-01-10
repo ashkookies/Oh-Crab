@@ -10,6 +10,8 @@
 
 [node name="ParallaxBackground" type="ParallaxBackground" parent="."]
 script = ExtResource("1_vd2cx")
+vertical_offset = -30.0
+global_scale = 1.65
 
 [node name="Sky" type="ParallaxLayer" parent="ParallaxBackground"]
 

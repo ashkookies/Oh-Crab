@@ -17,13 +17,11 @@ var scene5_dialogue = [
 ]
 
 var throw_dialogue = [
-	"*Nugu throws the trash into the water*",
 	"(Well... time to go home)"
 ]
 
 var scene6_dialogue = [
 	"Voices: ~Do you truly wish to follow in this path?~",
-	"*Nugu turns to the left*",
 	"Nugu: What? Who's there?"
 ]
 
@@ -107,11 +105,12 @@ func _on_dialogue_completed():
 	current_message_index += 1
 	if current_message_index < current_messages.size():
 		if current_messages == scene6_dialogue and current_message_index == 1:
-			# Turn player sprite to the left after first dialogue in Scene6
+			# Turn player sprite to the right after first dialogue in Scene6
 			if player:
 				var animated_sprite = player.get_node("AnimatedSprite2D")
 				if animated_sprite:
-					animated_sprite.flip_h = true
+					animated_sprite.play("walk_right")  # Changed to use walk_right animation
+					animated_sprite.stop()  # Stop the animation but keep the frame
 			trigger_next_dialogue()
 		else:
 			trigger_next_dialogue()
