@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://x5adm0eln3ug"
-path="res://.godot/imported/Friend2.png-0f8d2e41bddfb44576deddad7121338d.ctex"
+uid="uid://ynjp5vcvd8j"
+path="res://.godot/imported/Worker2.png-b97f4bb866886b690d4a13683a0ccaba.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/neighborhood/Friend2.png"
-dest_files=["res://.godot/imported/Friend2.png-0f8d2e41bddfb44576deddad7121338d.ctex"]
+source_file="res://assets/sprites/neighborhood/Worker2.png"
+dest_files=["res://.godot/imported/Worker2.png-b97f4bb866886b690d4a13683a0ccaba.ctex"]
 
 [params]
 
