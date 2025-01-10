@@ -346,6 +346,7 @@ pattern_0 = SubResource("TileMapPattern_kjhn6")
 size = Vector2(15, 377)
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_4uhwp"]
+height = 62.0
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_ekcy2"]
 texture = ExtResource("10_4vsua")
@@ -1867,11 +1868,12 @@ position = Vector2(592, -76)
 next_scene_path = "res://scenes/beach.tscn"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="BeachTransition"]
-position = Vector2(658, -24)
+position = Vector2(660, -26)
 shape = SubResource("CapsuleShape2D_4uhwp")
 
 [node name="Truck" parent="." instance=ExtResource("4_7ceft")]
-position = Vector2(196, -110)
+position = Vector2(196, -122)
+scale = Vector2(1.7527, 1.99285)
 
 [node name="TileMap" type="TileMap" parent="."]
 position = Vector2(-15, -14)

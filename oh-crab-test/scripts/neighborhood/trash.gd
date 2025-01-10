@@ -14,6 +14,7 @@ enum TrashState { FULL, HALF_EMPTY, EMPTY }
 # Export variables for inspector configuration
 @export var initial_state: TrashState = TrashState.FULL
 @export var flip_horizontally: bool = false
+@export var is_interactable: bool = true  # New exported variable
 
 var current_state: TrashState
 var can_interact: bool = false
@@ -85,7 +86,7 @@ func update_trash_visibility():
 			empty_trash.visible = true
 
 func _on_interact():
-	if not is_collected:
+	if not is_collected and is_interactable:  # Modified to check is_interactable
 		show_prompt("[F] to pick up trash")
 		can_interact = true
 
@@ -95,7 +96,7 @@ func _on_exit_area():
 	can_interact = false
 
 func _process(delta: float):
-	if can_interact and Input.is_action_just_pressed("interact") and not is_collected:
+	if can_interact and Input.is_action_just_pressed("interact") and not is_collected and is_interactable:  # Modified to check is_interactable
 		collect_trash()
 
 func collect_trash():
