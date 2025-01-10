@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ba0h18wycjikn"
-path="res://.godot/imported/friend2.png-e0c75b751ceaf2df1132697ecfb840e5.ctex"
+uid="uid://cacorun5nq4l5"
+path="res://.godot/imported/tile_village_fountain.png-c735bc59d69f3a0612613b1ac64eb74f.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/neighborhood/friend2.png"
-dest_files=["res://.godot/imported/friend2.png-e0c75b751ceaf2df1132697ecfb840e5.ctex"]
+source_file="res://assets/sprites/neighborhood/background props/tile_village_fountain.png"
+dest_files=["res://.godot/imported/tile_village_fountain.png-c735bc59d69f3a0612613b1ac64eb74f.ctex"]
 
 [params]
 

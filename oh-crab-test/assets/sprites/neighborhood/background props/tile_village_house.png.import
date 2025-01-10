@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ba0h18wycjikn"
-path="res://.godot/imported/friend2.png-e0c75b751ceaf2df1132697ecfb840e5.ctex"
+uid="uid://bsupg472gcfug"
+path="res://.godot/imported/tile_village_house.png-ab9652453cef5801f88394276ce5dd29.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/neighborhood/friend2.png"
-dest_files=["res://.godot/imported/friend2.png-e0c75b751ceaf2df1132697ecfb840e5.ctex"]
+source_file="res://assets/sprites/neighborhood/background props/tile_village_house.png"
+dest_files=["res://.godot/imported/tile_village_house.png-ab9652453cef5801f88394276ce5dd29.ctex"]
 
 [params]
 

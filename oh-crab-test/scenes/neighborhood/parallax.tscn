@@ -17,6 +17,8 @@
 scale = Vector2(0.35, 0.35)
 transform = Transform2D(0.35, 0, 0, 0.35, 0, 0)
 script = ExtResource("1_dexwt")
+sky_scale = 0.3
+is_indoor = true
 
 [node name="Sky" type="ParallaxLayer" parent="ParallaxBackground"]
 texture_filter = 1

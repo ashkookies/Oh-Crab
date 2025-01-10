@@ -18,7 +18,7 @@ var story_events = [
 	},
 	{
 		"text": ["Usain Bolt please take over my body!!!"],
-		"position": Vector2(425, 10),
+		"position": Vector2(425, 0),
 		"type": "dialogue",
 		"speaker": "Nugu",
 		"auto_play": false,
@@ -26,7 +26,7 @@ var story_events = [
 	},
 	{
 		"text": [" (Oh, there seems to be trash on the ground…I wonder if I can catch up to the truck if I follow it)"],
-		"position": Vector2(600, 10),
+		"position": Vector2(600, 0),
 		"type": "dialogue",
 		"speaker": "Nugu",
 		"auto_play": false,
@@ -34,16 +34,17 @@ var story_events = [
 	},
 	{
 		"text": ["Hey Nugu! Wanna play with us?", "Later!!"],
-		"position": Vector2(900, 10),
+		"position": Vector2(800, 0),
 		"type": "dialogue",
 		"speakers": ["Friend1", "Nugu"],
 		"auto_play": false,
 		"restrict_movement": true,
-		"unlock_movement_after": true
+		"unlock_movement_after": true,
+		"trigger_scene_event": "friend1_stop"  # Added this trigger
 	},
 	{
 		"text": ["Hey kid! Wanna join our coastal cleanup drive-", "MOVE!!"],
-		"position": Vector2(1100, 10),
+		"position": Vector2(1000, 0),
 		"type": "dialogue",
 		"speakers": ["Stranger1", "Nugu"],
 		"auto_play": false,
@@ -54,86 +55,84 @@ var story_events = [
 signal dialogue_started
 signal dialogue_ended
 
-@onready var dialogue_system = get_node("Dialogue")
-@onready var truck = get_node("Truck")
-@onready var player = get_tree().get_first_node_in_group("player")
+@onready var dialogue_system: Node
+@onready var truck: Node2D
+@onready var player: Node2D
+@onready var friend1: AnimatedSprite2D
 
-var current_line_index = 0
+var current_line_index: int = 0
 var current_event_text: Array
-var current_event_index = 0
-var triggered_events = {}
-var current_dialogue_active = false
-var can_advance = false
-var input_disabled = false
+var current_event_index: int = 0
+var triggered_events: Dictionary = {}
+var current_dialogue_active: bool = false
+var can_advance: bool = false
+var input_disabled: bool = false
 
-@export var show_debug_markers: bool = true
-var debug_markers: Array[Node] = []
-
-
-func _ready():
-	# Debug print statements
-	print("Story Manager Ready")
-	if truck:
-		print("Truck found at: ", truck.position)
-	else:
-		print("WARNING: Truck node not found!")
+func _ready() -> void:
+	print("StoryManager: Starting initialization...")
+	dialogue_system = get_node_or_null("Dialogue")
+	truck = get_node_or_null("Truck")
+	player = get_tree().get_first_node_in_group("player")
+	friend1 = get_node_or_null("Friend1")
 	
-	if player:
-		print("Player found")
-	else:
-		print("WARNING: Player not found in group 'player'!")
-		
+	if dialogue_system:
+		# Check if signal exists and connect it
+		if dialogue_system.has_signal("dialogue_completed"):
+			if !dialogue_system.is_connected("dialogue_completed", _on_dialogue_completed):
+				dialogue_system.dialogue_completed.connect(_on_dialogue_completed)
+				print("Connected dialogue_completed signal")
+		else:
+			push_error("Dialogue system missing dialogue_completed signal!")
+	
 	setup_interaction_areas()
-	dialogue_system.dialogue_completed.connect(_on_dialogue_completed)
 	
+	# Start first dialogue after a short delay
 	await get_tree().create_timer(1.0).timeout
 	start_first_dialogue()
 
-func toggle_debug_markers(visible: bool):
-	show_debug_markers = visible
-	for marker in debug_markers:
-		marker.visible = visible
+func _input(event: InputEvent) -> void:
+	if event.is_action_pressed("ui_accept"):
+		print("Space pressed - Dialogue active:", current_dialogue_active, " Can advance:", can_advance)
+		if current_dialogue_active and can_advance and !input_disabled:
+			input_disabled = true
+			print("Attempting to advance dialogue")
+			handle_dialogue_advance()
+			await get_tree().create_timer(0.2).timeout
+			input_disabled = false
 
-func _unhandled_input(event):
-	# If dialogue is active, consume all jump inputs
-	if current_dialogue_active:
-		if event.is_action("ui_select"):  # Assuming this is your jump action
-			get_viewport().set_input_as_handled()
-			if not input_disabled:
-				input_disabled = true
-				handle_dialogue_advance()
-				await get_tree().create_timer(0.2).timeout
-				input_disabled = false
-		elif event.is_action_pressed("ui_accept"):
-			get_viewport().set_input_as_handled()
-			if not input_disabled:
-				input_disabled = true
-				handle_dialogue_advance()
-				await get_tree().create_timer(0.2).timeout
-				input_disabled = false
+func _unhandled_input(event: InputEvent) -> void:
+	# Debug print to verify input detection
+	if event.is_action_pressed("ui_accept"):
+		print("Space bar pressed! Dialogue active:", current_dialogue_active, " Input disabled:", input_disabled)
+	
+	# Check if dialogue is active and input isn't disabled
+	if !current_dialogue_active || input_disabled:
+		return
+		
+	# Handle both space and enter keys
+	if event.is_action_pressed("ui_accept"):
+		get_viewport().set_input_as_handled()
+		input_disabled = true
+		print("Advancing dialogue...")
+		handle_dialogue_advance()
+		# Re-enable input after a short delay
+		await get_tree().create_timer(0.2).timeout
+		input_disabled = false
 
-func handle_dialogue_advance():
-	if can_advance:
-		print("Advancing dialogue")
-		can_advance = false
-		if current_line_index >= current_event_text.size():
-			_on_dialogue_completed()
-		else:
-			show_next_line()
-			# Auto advance if specified
-			var current_event = story_events[current_event_index]
-			if current_event.get("auto_advance", false):
-				await get_tree().create_timer(0.5).timeout
-				handle_dialogue_advance()
+func handle_dialogue_advance() -> void:
+	print("Handle dialogue advance - Current line:", current_line_index, "/", current_event_text.size())
+	if !can_advance:
+		return
+	
+	can_advance = false
+	
+	if current_line_index < current_event_text.size():
+		show_next_line()
+	else:
+		print("No more lines, completing dialogue")
+		_on_dialogue_completed()
 
-func start_first_dialogue():
-	for i in story_events.size():
-		if story_events[i].get("auto_start", false):
-			trigger_event(i)
-			break
-
-func setup_interaction_areas():
-	print("Setting up interaction areas")
+func setup_interaction_areas() -> void:
 	for i in story_events.size():
 		var event = story_events[i]
 		var interaction_area = create_interaction_area()
@@ -141,56 +140,62 @@ func setup_interaction_areas():
 		interaction_area.set_meta("event_index", i)
 		add_child(interaction_area)
 
-func create_interaction_area():
-	var area = Area2D.new()  # Changed from preloading script
-	area.collision_layer = 0  # Layer 0
-	area.collision_mask = 2   # Assuming player is on layer 2
+func create_interaction_area() -> Area2D:
+	var area = Area2D.new()
+	area.collision_layer = 0
+	area.collision_mask = 2
 	
 	var collision = CollisionShape2D.new()
 	var shape = RectangleShape2D.new()
-	
 	shape.extents = Vector2(50, 134)
 	collision.shape = shape
 	area.add_child(collision)
 	
-	# Connect signal using callable
+	# Connect the area signal
 	area.body_entered.connect(_on_interaction_area_entered.bind(area))
+	
 	return area
 
-func _on_interaction_area_entered(body: Node2D, area: Area2D):
-	print("Body entered interaction area. Body: ", body.name)  # Debug print
-	
-	if body.is_in_group("player"):
-		print("Player detected in interaction area")  # Debug print
-		var event_index = area.get_meta("event_index")  # Changed to use meta
+func _on_interaction_area_entered(body: Node2D, area: Area2D) -> void:
+	if !body.is_in_group("player"):
+		return
 		
-		# Don't retrigger if this is the currently active dialogue
-		if current_dialogue_active and current_event_index == event_index:
-			return
-			
-		# Otherwise, proceed with triggering new dialogue
-		if not triggered_events.has(event_index):
-			print("Triggering event ", event_index)
-			if current_dialogue_active:
-				force_complete_current_dialogue()
-			trigger_event(event_index)
+	var event_index = area.get_meta("event_index")
+	
+	# Don't retrigger active dialogue
+	if current_dialogue_active && current_event_index == event_index:
+		return
+		
+	# Trigger new dialogue if not already triggered
+	if !triggered_events.has(event_index):
+		if current_dialogue_active:
+			force_complete_current_dialogue()
+		trigger_event(event_index)
 
-func force_complete_current_dialogue():
+func start_first_dialogue() -> void:
+	for i in story_events.size():
+		if story_events[i].get("auto_start", false):
+			trigger_event(i)
+			break
+
+func force_complete_current_dialogue() -> void:
 	current_dialogue_active = false
 	dialogue_system.hide()
 	dialogue_ended.emit()
 	enable_player_movement(true)
 
-func enable_player_movement(enabled: bool):
-	if player:
-		if player.has_method("enable_movement"):
-			player.enable_movement(enabled)
-		if player.has_method("set_can_move"):
-			player.set_can_move(enabled)
+func enable_player_movement(enabled: bool) -> void:
+	if !player:
+		return
+		
+	if player.has_method("enable_movement"):
+		player.call("enable_movement", enabled)
+	if player.has_method("set_can_move"):
+		player.call("set_can_move", enabled)
 
-func _on_dialogue_completed():
-	print("Dialogue completed signal received")
-	can_advance = true
+# Make sure these functions are properly setting can_advance
+func _on_dialogue_completed() -> void:
+	print("Dialogue completed called")
 	
 	if current_line_index >= current_event_text.size():
 		var current_event = story_events[current_event_index]
@@ -200,16 +205,17 @@ func _on_dialogue_completed():
 			match current_event.trigger_scene_event:
 				"truck_leaving":
 					animate_truck_leaving()
+				"friend1_stop":
+					handle_friend1_animation()
 		
 		current_dialogue_active = false
-		dialogue_system.hide()
+		if dialogue_system:
+			dialogue_system.hide()
 		dialogue_ended.emit()
 		
-		# Reset player state when dialogue ends
 		if player:
 			if player.has_method("set_dialogue_active"):
-				player.set_dialogue_active(false)
-			# Only enable movement if unlock_movement_after is true or not specified
+				player.call("set_dialogue_active", false)
 			if current_event.get("unlock_movement_after", true):
 				enable_player_movement(true)
 		
@@ -217,9 +223,9 @@ func _on_dialogue_completed():
 		current_event_index += 1
 	else:
 		can_advance = true
+		print("Dialogue not complete yet, can advance to next line")
 
-func trigger_event(index: int):
-	print("Triggering event: ", index)
+func trigger_event(index: int) -> void:
 	current_event_index = index
 	var event = story_events[index]
 	current_event_text = event.text
@@ -229,46 +235,62 @@ func trigger_event(index: int):
 	
 	if player:
 		if player.has_method("set_dialogue_active"):
-			player.set_dialogue_active(true)
+			player.call("set_dialogue_active", true)
 		if event.get("restrict_movement", false):
 			enable_player_movement(false)
 	
 	show_next_line()
+
+func show_next_line() -> void:
+	if !dialogue_system:
+		print("Cannot show line - dialogue system missing")
+		return
+		
+	var event = story_events[current_event_index]
+	var line = str(current_event_text[current_line_index])
 	
-	# Auto-trigger truck leaving after showing dialogue
-	if event.get("trigger_scene_event") == "truck_leaving":
-		await get_tree().create_timer(2.0).timeout
-		animate_truck_leaving()
-
-func show_next_line():
-	if current_line_index < current_event_text.size():
-		var event = story_events[current_event_index]
-		var line = str(current_event_text[current_line_index])  # Convert to string
-		
-		dialogue_system.show()
-		if event.get("type") == "narration":
-			dialogue_system.trigger_dialogue("*" + line + "*")
-		else:
-			var speaker = ""
-			if event.has("speakers"):
-				speaker = str(event.speakers[current_line_index])  # Convert to string
-			else:
-				speaker = str(event.get("speaker", ""))  # Convert to string
-			
-			var full_line = speaker + ": " + line if speaker else line
-			print("Showing dialogue line: ", full_line)
-			dialogue_system.trigger_dialogue(full_line)
-		
-		current_line_index += 1
-		await get_tree().create_timer(0.2).timeout
-		can_advance = true
+	print("Showing line:", line)
+	dialogue_system.show()
+	
+	if event.get("type") == "narration":
+		dialogue_system.trigger_dialogue("*" + line + "*")
 	else:
-		_on_dialogue_completed()
+		var speaker = ""
+		if event.has("speakers"):
+			speaker = str(event.speakers[current_line_index])
+		else:
+			speaker = str(event.get("speaker", ""))
+		
+		var full_line = speaker + ": " + line if speaker else line
+		print("Triggering dialogue:", full_line)
+		dialogue_system.trigger_dialogue(full_line)
+	
+	current_line_index += 1
+	await get_tree().create_timer(0.2).timeout
+	can_advance = true
+	print("Ready for next line - Can advance set to true")
 
-func animate_truck_leaving():
-	if truck:
-		var tween = create_tween()
-		tween.tween_property(truck, "position:x", truck.position.x + 300, 1.5)
-		await tween.finished
-		if is_instance_valid(truck):
-			truck.queue_free()
+func animate_truck_leaving() -> void:
+	if !truck:
+		return
+		
+	var tween = create_tween()
+	tween.tween_property(truck, "position:x", truck.position.x + 300, 1.5)
+	await tween.finished
+	
+	if is_instance_valid(truck):
+		truck.queue_free()
+
+func handle_friend1_animation() -> void:
+	if friend1:
+		friend1.stop()  # Stop any current animation
+		friend1.frame = 0  # Set to default frame
+		
+		# If the sprite has a play_animation() method, stop it
+		if friend1.has_method("play_animation"):
+			friend1.play_animation("default")
+			
+		# If you're using the built-in animation player
+		if friend1.sprite_frames:
+			friend1.stop()
+			friend1.animation = "default"

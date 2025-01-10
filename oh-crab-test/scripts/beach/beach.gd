@@ -1,4 +1,3 @@
-# DialogueManager.gd
 extends Node
 
 @onready var dialogue_system = $Dialogue
@@ -11,18 +10,18 @@ extends Node
 var scene4_dialogue = [
 	"Phew! Finally!"
 ]
-
 var scene5_dialogue = [
 	"(Oh! So this is where our trash ends up. Might as well do the same)"
 ]
-
 var throw_dialogue = [
 	"(Well... time to go home)"
 ]
-
 var scene6_dialogue = [
-	"Voices: ~Do you truly wish to follow in this path?~",
-	"Nugu: What? Who's there?"
+	"Unknown Voice: ~Do you truly wish to follow in this path?~",
+	"What? Who's there?",
+	"Unkown Voice: ~You shall soon learn what it is like below the water.~",
+	"Huh?",
+	"Huh. Must've been the waves."
 ]
 
 var current_messages = []
@@ -31,6 +30,10 @@ var scene4_triggered = false
 var scene5_triggered = false
 var scene6_triggered = false
 var has_thrown_trash = false
+var can_return_home = false  # New variable to track if player can return home
+
+# Signal to notify when scene 6 is completed
+signal scene6_completed
 
 func _ready():
 	if dialogue_system:
@@ -109,14 +112,22 @@ func _on_dialogue_completed():
 			if player:
 				var animated_sprite = player.get_node("AnimatedSprite2D")
 				if animated_sprite:
-					animated_sprite.play("walk_right")  # Changed to use walk_right animation
-					animated_sprite.stop()  # Stop the animation but keep the frame
+					animated_sprite.play("walk_right")
+					animated_sprite.stop()
 			trigger_next_dialogue()
 		else:
 			trigger_next_dialogue()
 	else:
 		player.can_move = true
+		# Check if scene 6 dialogue was completed
+		if current_messages == scene6_dialogue:
+			can_return_home = true
+			emit_signal("scene6_completed")  # Emit signal when scene 6 is completed
 
 func trigger_next_dialogue():
 	if current_message_index < current_messages.size():
 		dialogue_system.trigger_dialogue(current_messages[current_message_index])
+
+# New function to check if player can return home
+func can_player_return_home() -> bool:
+	return can_return_home

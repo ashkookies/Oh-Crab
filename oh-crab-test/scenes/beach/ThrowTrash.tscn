@@ -5,8 +5,8 @@
 [ext_resource type="Script" path="res://shortcuts/interaction area/interaction_area.gd" id="2_p3p8q"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_mp255"]
-radius = 23.0
-height = 54.0
+radius = 42.0
+height = 84.0
 
 [node name="RigidBody2D" type="RigidBody2D"]
 script = ExtResource("1_gckfa")

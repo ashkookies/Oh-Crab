@@ -51,7 +51,7 @@ func adjust_all_layers():
 				
 		match layer.name:
 			"Sky":
-				sprite.position = Vector2(0, -50)
+				sprite.position = Vector2(0, -85)
 				layer.motion_scale.x = clouds_scale
 				var sky_scale = (viewport_size.y * 3.0) / texture_size.y
 				sprite.scale = Vector2(sky_scale, sky_scale)
@@ -65,7 +65,7 @@ func adjust_all_layers():
 				sprite.position = Vector2(0, -50)
 				layer.motion_scale.x = river_scale
 			"River", "RiverReflection", "RiverFront":
-				sprite.position = Vector2(0, -100)
+				sprite.position = Vector2(0, -85)
 				layer.motion_scale.x = river_scale
 				var river_scale = (viewport_size.y * 1.0) / texture_size.y
 				sprite.scale = Vector2(river_scale, river_scale)

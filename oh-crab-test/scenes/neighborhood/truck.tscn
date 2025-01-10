@@ -1,6 +1,8 @@
-[gd_scene load_steps=7 format=3 uid="uid://cbt4hlv6p03o6"]
+[gd_scene load_steps=10 format=3 uid="uid://cbt4hlv6p03o6"]
 
 [ext_resource type="Texture2D" uid="uid://c23mhhlf2gmmg" path="res://assets/sprites/neighborhood/Illustration2.png" id="1_h87lr"]
+[ext_resource type="Script" path="res://shortcuts/interaction area/interaction_area.gd" id="2_2dnfh"]
+[ext_resource type="Script" path="res://scripts/neighborhood/truck.gd" id="2_g7jt2"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_345nx"]
 atlas = ExtResource("1_h87lr")
@@ -38,9 +40,23 @@ animations = [{
 "speed": 6.0
 }]
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_isci0"]
+size = Vector2(110.6, 34.6287)
+
 [node name="AnimatedSprite2D" type="AnimatedSprite2D"]
 position = Vector2(-0.666668, -33)
 scale = Vector2(1.45833, 1.45833)
 sprite_frames = SubResource("SpriteFrames_a5tbn")
 autoplay = "default"
 frame_progress = 0.900721
+script = ExtResource("2_g7jt2")
+base_speed = 700.0
+
+[node name="InteractionArea" type="Area2D" parent="."]
+script = ExtResource("2_2dnfh")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="InteractionArea"]
+light_mask = 3
+visibility_layer = 3
+position = Vector2(-16.2429, 7.02859)
+shape = SubResource("RectangleShape2D_isci0")
