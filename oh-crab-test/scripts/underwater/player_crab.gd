@@ -8,6 +8,9 @@ const JUMP_VELOCITY = -300.0
 
 var is_movement_locked: bool = false
 
+func _ready():
+	add_to_group("player")
+
 func _physics_process(delta: float) -> void:
 	if is_movement_locked:
 		velocity.x = 0
