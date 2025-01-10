@@ -12,6 +12,7 @@ signal dialogue_completed
 
 @export var text_speed: float = 0.05
 @export var auto_hide: bool = true
+@export var z_index: int = 10  # Set a high Z-index to render on top
 
 var current_text: String = \"\"
 var displayed_text: String = \"\"
@@ -24,6 +25,9 @@ func _ready():
 	dialogue_active = false
 	reset_dialogue_state()
 	
+	# Ensure the dialogue is always rendered on top
+	self.z_index = z_index
+
 	# Find the Crab node
 	crab_node = get_parent().get_node(\"Crab\")
 	

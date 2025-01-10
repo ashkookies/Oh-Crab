@@ -11,9 +11,8 @@
 [ext_resource type="PackedScene" uid="uid://rwioaa6b1l66" path="res://scenes/killzone.tscn" id="8_mf284"]
 [ext_resource type="PackedScene" uid="uid://cvpkttunkn2nj" path="res://shortcuts/interaction area/interaction_area.tscn" id="10_u5pxr"]
 [ext_resource type="PackedScene" uid="uid://jyxkmjclblfm" path="res://scenes/dialogue.tscn" id="11_lbynx"]
-[ext_resource type="PackedScene" uid="uid://bx2ohucwmmf3t" path="res://scenes/underwater/hermit crab_mom.tscn" id="12_f6fpw"]
 [ext_resource type="Texture2D" uid="uid://d4jt236jp741v" path="res://assets/sprites/trash/individual/water bottle dirty.png" id="13_83ahp"]
-[ext_resource type="PackedScene" uid="uid://dtc20llmyq0wh" path="res://scenes/underwater/hermit crab_dad.tscn" id="14_cmsgj"]
+[ext_resource type="PackedScene" path="res://scenes/underwater/hermit crab_dad.tscn" id="14_cmsgj"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_bxkii"]
 texture = ExtResource("2_pv786")
@@ -276,13 +275,16 @@ sources/1 = SubResource("TileSetAtlasSource_8a121")
 [sub_resource type="CircleShape2D" id="CircleShape2D_kdxg1"]
 radius = 23.0217
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_gvjx2"]
+size = Vector2(123, 117)
+
 [node name="Waking up [UNDERWATER]" type="Node2D"]
 script = ExtResource("1_20iab")
 
-[node name="Crab" parent="." instance=ExtResource("1_stebn")]
-position = Vector2(185, 107)
+[node name="Player" parent="." instance=ExtResource("1_stebn")]
+position = Vector2(185, 112)
 
-[node name="Camera2D" type="Camera2D" parent="Crab"]
+[node name="Camera2D" type="Camera2D" parent="Player"]
 position = Vector2(-1, -16)
 zoom = Vector2(4, 4)
 
@@ -348,16 +350,28 @@ texture = ExtResource("4_v0c6m")
 position = Vector2(256, 304)
 
 [node name="InteractionArea" parent="." instance=ExtResource("10_u5pxr")]
+visible = false
 position = Vector2(185, 100)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="InteractionArea"]
+position = Vector2(2, -1)
 shape = SubResource("CircleShape2D_kdxg1")
 
 [node name="Dialogue" parent="." instance=ExtResource("11_lbynx")]
 
-[node name="AnimatedSprite2D" parent="." instance=ExtResource("12_f6fpw")]
+[node name="AnimatedSprite2D" parent="."]
+_import_path = NodePath("")
+unique_name_in_owner = false
+process_mode = 0
+process_priority = 0
+process_physics_priority = 0
+process_thread_group = 0
+physics_interpolation_mode = 0
+auto_translate_mode = 0
+editor_description = ""
 position = Vector2(855, 102)
 scale = Vector2(0.78125, 0.78125)
+script = null
 
 [node name="WaterBottleDirty" type="Sprite2D" parent="."]
 position = Vector2(829, 104)
@@ -366,3 +380,12 @@ texture = ExtResource("13_83ahp")
 [node name="dad" parent="." instance=ExtResource("14_cmsgj")]
 position = Vector2(913, 97)
 scale = Vector2(1.09375, 1.09375)
+
+[node name="Scene9" parent="." instance=ExtResource("10_u5pxr")]
+position = Vector2(-348, -266)
+collision_layer = 3
+collision_mask = 3
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Scene9"]
+position = Vector2(921, 320)
+shape = SubResource("RectangleShape2D_gvjx2")

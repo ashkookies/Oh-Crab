@@ -40,7 +40,8 @@ var story_events = [
 		"auto_play": false,
 		"restrict_movement": true,
 		"unlock_movement_after": true,
-		"trigger_scene_event": "friend1_stop"  # Added this trigger
+		"pre_dialogue_event": "friend1_stop",
+		"post_dialogue_event": "friend1_resume"
 	},
 	{
 		"text": ["Hey kid! Wanna join our coastal cleanup drive-", "MOVE!!"],
@@ -48,7 +49,10 @@ var story_events = [
 		"type": "dialogue",
 		"speakers": ["Stranger1", "Nugu"],
 		"auto_play": false,
-		"restrict_movement": true
+		"restrict_movement": true,
+		"unlock_movement_after": true,
+		"pre_dialogue_event": "worker1_stop",
+		"post_dialogue_event": "worker1_resume"
 	}
 ]
 
@@ -59,6 +63,7 @@ signal dialogue_ended
 @onready var truck: Node2D
 @onready var player: Node2D
 @onready var friend1: AnimatedSprite2D
+@onready var worker1: AnimatedSprite2D
 
 var current_line_index: int = 0
 var current_event_text: Array
@@ -74,6 +79,7 @@ func _ready() -> void:
 	truck = get_node_or_null("Truck")
 	player = get_tree().get_first_node_in_group("player")
 	friend1 = get_node_or_null("Friend1")
+	worker1 = get_node_or_null("Worker1")
 	
 	if dialogue_system:
 		# Check if signal exists and connect it
@@ -205,8 +211,6 @@ func _on_dialogue_completed() -> void:
 			match current_event.trigger_scene_event:
 				"truck_leaving":
 					animate_truck_leaving()
-				"friend1_stop":
-					handle_friend1_animation()
 		
 		current_dialogue_active = false
 		if dialogue_system:
@@ -228,6 +232,15 @@ func _on_dialogue_completed() -> void:
 func trigger_event(index: int) -> void:
 	current_event_index = index
 	var event = story_events[index]
+	
+	# Handle pre-dialogue events first
+	if event.has("pre_dialogue_event"):
+		match event.pre_dialogue_event:
+			"friend1_stop":
+				await handle_friend1_animation(false)
+			"worker1_stop":
+				await handle_worker1_animation(false)
+	
 	current_event_text = event.text
 	current_line_index = 0
 	current_dialogue_active = true
@@ -281,16 +294,38 @@ func animate_truck_leaving() -> void:
 	if is_instance_valid(truck):
 		truck.queue_free()
 
-func handle_friend1_animation() -> void:
-	if friend1:
-		friend1.stop()  # Stop any current animation
-		friend1.frame = 0  # Set to default frame
+func handle_friend1_animation(should_play: bool) -> void:
+	if !friend1:
+		return
 		
-		# If the sprite has a play_animation() method, stop it
-		if friend1.has_method("play_animation"):
-			friend1.play_animation("default")
-			
-		# If you're using the built-in animation player
+	if should_play:
+		# Resume animation
 		if friend1.sprite_frames:
-			friend1.stop()
+			friend1.play("moving") 
+	else:
+		# Stop animation
+		friend1.stop()
+		if friend1.sprite_frames:
 			friend1.animation = "default"
+			friend1.frame = 0
+	
+	# Add a small delay
+	await get_tree().create_timer(0.5).timeout
+
+func handle_worker1_animation(should_play: bool) -> void:
+	if !worker1:
+		return
+		
+	if should_play:
+
+		if worker1.sprite_frames:
+			worker1.play("moving")  # Or whatever your walking animation is named
+	else:
+		# Stop animation
+		worker1.stop()
+		if worker1.sprite_frames:
+			worker1.animation = "default"
+			worker1.frame = 0
+	
+	# Add a small delay
+	await get_tree().create_timer(0.5).timeout
