@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3 uid="uid://bi7giyhuubq2q"]
+[gd_scene load_steps=29 format=3 uid="uid://bi7giyhuubq2q"]
 
 [ext_resource type="Script" path="res://scripts/beach/beach.gd" id="1_gm35y"]
 [ext_resource type="PackedScene" uid="uid://b4r4qhmasmabq" path="res://scenes/player.tscn" id="2_6po4f"]
@@ -11,6 +11,8 @@
 [ext_resource type="Texture2D" uid="uid://bbclo4h27mkar" path="res://assets/sprites/underwater/Sand.png" id="9_vhm82"]
 [ext_resource type="Texture2D" uid="uid://ddoc3qkny4dlo" path="res://assets/sprites/beach/Water.png" id="10_swo6s"]
 [ext_resource type="PackedScene" uid="uid://c17a1c53ccofp" path="res://shortcuts/scene transition/scene_transition.tscn" id="11_owilr"]
+[ext_resource type="Texture2D" uid="uid://cc83j8i1br4ny" path="res://assets/sprites/trash/recycle_items.png" id="12_iv11h"]
+[ext_resource type="Texture2D" uid="uid://cpyc2n4x1ow2c" path="res://assets/sprites/trash/individual/garbage bag 2.png" id="13_yay05"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_prp38"]
 size = Vector2(15, 262)
@@ -558,6 +560,207 @@ height = 68.0
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_h5ylv"]
 height = 58.0
 
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_5uq38"]
+texture = ExtResource("12_iv11h")
+margins = Vector2i(1, 0)
+1:0/0 = 0
+2:0/0 = 0
+3:0/0 = 0
+6:0/0 = 0
+7:0/0 = 0
+8:0/0 = 0
+15:0/0 = 0
+18:0/0 = 0
+0:1/0 = 0
+1:1/0 = 0
+2:1/0 = 0
+3:1/0 = 0
+4:1/0 = 0
+5:1/0 = 0
+6:1/0 = 0
+7:1/0 = 0
+8:1/0 = 0
+9:1/0 = 0
+13:1/0 = 0
+14:1/0 = 0
+15:1/0 = 0
+16:1/0 = 0
+17:1/0 = 0
+18:1/0 = 0
+20:1/0 = 0
+21:1/0 = 0
+22:1/0 = 0
+23:1/0 = 0
+24:1/0 = 0
+25:1/0 = 0
+31:1/0 = 0
+0:2/0 = 0
+1:2/0 = 0
+2:2/0 = 0
+3:2/0 = 0
+4:2/0 = 0
+5:2/0 = 0
+6:2/0 = 0
+7:2/0 = 0
+8:2/0 = 0
+9:2/0 = 0
+10:2/0 = 0
+11:2/0 = 0
+12:2/0 = 0
+13:2/0 = 0
+14:2/0 = 0
+15:2/0 = 0
+16:2/0 = 0
+17:2/0 = 0
+18:2/0 = 0
+19:2/0 = 0
+20:2/0 = 0
+21:2/0 = 0
+22:2/0 = 0
+23:2/0 = 0
+24:2/0 = 0
+25:2/0 = 0
+26:2/0 = 0
+27:2/0 = 0
+28:2/0 = 0
+29:2/0 = 0
+30:2/0 = 0
+31:2/0 = 0
+0:3/0 = 0
+1:3/0 = 0
+2:3/0 = 0
+3:3/0 = 0
+4:3/0 = 0
+5:3/0 = 0
+6:3/0 = 0
+7:3/0 = 0
+8:3/0 = 0
+9:3/0 = 0
+10:3/0 = 0
+11:3/0 = 0
+12:3/0 = 0
+13:3/0 = 0
+14:3/0 = 0
+15:3/0 = 0
+16:3/0 = 0
+17:3/0 = 0
+18:3/0 = 0
+19:3/0 = 0
+20:3/0 = 0
+21:3/0 = 0
+22:3/0 = 0
+23:3/0 = 0
+24:3/0 = 0
+25:3/0 = 0
+26:3/0 = 0
+27:3/0 = 0
+28:3/0 = 0
+29:3/0 = 0
+30:3/0 = 0
+31:3/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_jcife"]
+texture = ExtResource("12_iv11h")
+1:0/0 = 0
+2:0/0 = 0
+3:0/0 = 0
+6:0/0 = 0
+7:0/0 = 0
+8:0/0 = 0
+15:0/0 = 0
+18:0/0 = 0
+0:1/0 = 0
+1:1/0 = 0
+2:1/0 = 0
+3:1/0 = 0
+4:1/0 = 0
+5:1/0 = 0
+6:1/0 = 0
+7:1/0 = 0
+8:1/0 = 0
+9:1/0 = 0
+13:1/0 = 0
+14:1/0 = 0
+15:1/0 = 0
+16:1/0 = 0
+17:1/0 = 0
+18:1/0 = 0
+20:1/0 = 0
+21:1/0 = 0
+22:1/0 = 0
+23:1/0 = 0
+24:1/0 = 0
+25:1/0 = 0
+31:1/0 = 0
+0:2/0 = 0
+1:2/0 = 0
+2:2/0 = 0
+3:2/0 = 0
+4:2/0 = 0
+5:2/0 = 0
+6:2/0 = 0
+7:2/0 = 0
+8:2/0 = 0
+9:2/0 = 0
+10:2/0 = 0
+11:2/0 = 0
+12:2/0 = 0
+13:2/0 = 0
+14:2/0 = 0
+15:2/0 = 0
+16:2/0 = 0
+17:2/0 = 0
+18:2/0 = 0
+19:2/0 = 0
+20:2/0 = 0
+21:2/0 = 0
+22:2/0 = 0
+23:2/0 = 0
+24:2/0 = 0
+25:2/0 = 0
+26:2/0 = 0
+27:2/0 = 0
+28:2/0 = 0
+29:2/0 = 0
+30:2/0 = 0
+31:2/0 = 0
+0:3/0 = 0
+1:3/0 = 0
+2:3/0 = 0
+3:3/0 = 0
+4:3/0 = 0
+5:3/0 = 0
+6:3/0 = 0
+7:3/0 = 0
+8:3/0 = 0
+9:3/0 = 0
+10:3/0 = 0
+11:3/0 = 0
+12:3/0 = 0
+13:3/0 = 0
+14:3/0 = 0
+15:3/0 = 0
+16:3/0 = 0
+17:3/0 = 0
+18:3/0 = 0
+19:3/0 = 0
+20:3/0 = 0
+21:3/0 = 0
+22:3/0 = 0
+23:3/0 = 0
+24:3/0 = 0
+25:3/0 = 0
+26:3/0 = 0
+27:3/0 = 0
+28:3/0 = 0
+29:3/0 = 0
+30:3/0 = 0
+31:3/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_8uj6p"]
+sources/0 = SubResource("TileSetAtlasSource_5uq38")
+sources/1 = SubResource("TileSetAtlasSource_jcife")
+
 [node name="Beach" type="Node2D"]
 script = ExtResource("1_gm35y")
 
@@ -651,5 +854,18 @@ next_scene_path = "res://scenes/neighborhood2.tscn"
 [node name="CollisionShape2D" type="CollisionShape2D" parent="NeighborhoodTransition"]
 position = Vector2(-45, -12)
 shape = SubResource("CapsuleShape2D_h5ylv")
+
+[node name="Trash" type="Node" parent="."]
+
+[node name="TileMap" type="TileMap" parent="Trash"]
+scale = Vector2(0.3, 0.3)
+tile_set = SubResource("TileSet_8uj6p")
+format = 2
+layer_0/tile_data = PackedInt32Array(589839, 0, 1610612737, 589840, 0, 1610612738, 589841, 0, 1610612739, 1507421, 2031616, 1610612737, 1507422, 2031616, 1610612738, 1507423, 2031616, 1610612739, 1769594, 393216, 0, 1835130, 393216, 1, 1900666, 393216, 2, 1966202, 393216, 3, 1769595, 458752, 0, 1835131, 458752, 1, 1900667, 458752, 2, 1966203, 458752, 3, 1769596, 524288, 0, 1835132, 524288, 1, 1900668, 524288, 2, 1966204, 524288, 3, 589934, 0, 1342177281, 589933, 0, 1342177282, 589932, 0, 1342177283, 1245221, 851968, 1610612737, 1179685, 917504, 1610612737, 1245222, 851968, 1610612738, 1179686, 917504, 1610612738, 1245223, 851968, 1610612739, 1179687, 917504, 1610612739)
+
+[node name="Sprite2D" type="Sprite2D" parent="Trash"]
+position = Vector2(240.125, 108.125)
+scale = Vector2(0.828947, 0.816668)
+texture = ExtResource("13_yay05")
 
 [connection signal="child_entered_tree" from="." to="Player" method="_on_game_child_entered_tree"]
