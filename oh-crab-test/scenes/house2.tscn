@@ -1,4 +1,4 @@
-[gd_scene load_steps=42 format=3 uid="uid://x2xnfvxpn670"]
+[gd_scene load_steps=44 format=3 uid="uid://x2xnfvxpn670"]
 
 [ext_resource type="Script" path="res://scripts/neighborhood/house_2.gd" id="1_r6p8i"]
 [ext_resource type="PackedScene" uid="uid://b4r4qhmasmabq" path="res://scenes/player.tscn" id="2_fb6x4"]
@@ -10,6 +10,7 @@
 [ext_resource type="Script" path="res://scripts/neighborhood/tile_opacity_controller.gd" id="8_e850w"]
 [ext_resource type="PackedScene" uid="uid://dijubl4kxp0u0" path="res://scenes/neighborhood/trash.tscn" id="9_3wegn"]
 [ext_resource type="PackedScene" uid="uid://cvpkttunkn2nj" path="res://shortcuts/interaction area/interaction_area.tscn" id="11_ule8e"]
+[ext_resource type="PackedScene" uid="uid://c17a1c53ccofp" path="res://shortcuts/scene transition/scene_transition.tscn" id="12_xfb2p"]
 [ext_resource type="Script" path="res://scripts/neighborhood/ladder.gd" id="13_f33vn"]
 [ext_resource type="Texture2D" uid="uid://cr2oip5b1t7lv" path="res://assets/sprites/neighborhood/house/mom.png" id="14_4o0s2"]
 [ext_resource type="PackedScene" uid="uid://jyxkmjclblfm" path="res://scenes/dialogue.tscn" id="16_g1dw5"]
@@ -3282,6 +3283,8 @@ texture = ExtResource("20_87lae")
 sources/0 = SubResource("TileSetAtlasSource_wi3jb")
 sources/1 = SubResource("TileSetAtlasSource_y233w")
 
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_hocud"]
+
 [node name="House" type="Node2D"]
 script = ExtResource("1_r6p8i")
 
@@ -3402,5 +3405,14 @@ layer_1/tile_data = PackedInt32Array(-524260, 786432, 12, -458724, 786432, 13, -
 layer_2/name = "Layer2"
 layer_2/z_index = -3
 layer_2/tile_data = PackedInt32Array(-524266, 131072, 73, -458730, 131072, 74, -393194, 131072, 75, -327658, 131072, 76, -262122, 196608, 74, -524265, 196608, 73, -458729, 196608, 74, -393193, 196608, 75, -327657, 196608, 76, -262121, 262144, 74, -524264, 262144, 73, -458728, 262144, 74, -393192, 262144, 75, -327656, 262144, 76, -262120, 327680, 74, -524263, 327680, 73, -458727, 327680, 74, -393191, 327680, 75, -327655, 327680, 76, -262119, 196608, 74, -524262, 262144, 73, -458726, 262144, 74, -393190, 262144, 75, -327654, 262144, 76, -262118, 196608, 74, -524260, 327680, 73, -458724, 327680, 74, -393188, 327680, 75, -327652, 327680, 76, -262116, 327680, 74, -524259, 393216, 73, -458723, 393216, 74, -393187, 393216, 75, -327651, 393216, 76, -262115, 393216, 75, -524258, 458752, 73, -458722, 458752, 74, -393186, 458752, 75, -327650, 0, 66, -262114, 0, 67, -524261, 262144, 73, -458725, 327680, 74, -393189, 327680, 75, -327653, 327680, 76, -262117, 262144, 74, -196586, 196608, 75, -131050, 131072, 75, -65514, 131072, 76, 22, 131072, 77, -196585, 262144, 75, -131049, 196608, 75, -65513, 196608, 76, 23, 196608, 77, -196584, 327680, 75, -131048, 262144, 75, -65512, 262144, 76, 24, 262144, 77, -196583, 196608, 75, -131047, 196608, 74, -65511, 196608, 75, 25, 262144, 77, -196582, 196608, 75, -131046, 262144, 74, -65510, 262144, 75, 26, 196608, 77, -196581, 262144, 75, -131045, 327680, 74, -65509, 327680, 75, 27, 262144, 77, -196580, 327680, 75, -131044, 262144, 75, -65508, 262144, 76, 28, 262144, 77, -196579, 393216, 76, -131043, 393216, 77, -65507, 393216, 75, -196578, 0, 68, -131042, 0, 69, -65506, 0, 70, 29, 393216, 76, 65565, 393216, 77, 30, 458752, 76, 65566, 458752, 77, -524268, 0, 73, -458732, 0, 74, -393196, 0, 75, -327660, 0, 76, -262124, 0, 77, -524267, 65536, 73, -458731, 65536, 74, -393195, 65536, 75, -327659, 65536, 76, -262123, 65536, 77, -196588, 0, 76, -131052, 0, 77, -65516, 0, 76, 20, 0, 77, -196587, 65536, 76, -131051, 65536, 77, -65515, 65536, 76, 21, 65536, 77, -589804, 0, 72, -589803, 65536, 72, -262112, 131072, 67, -262111, 196608, 67, -262110, 262144, 67, -262109, 262144, 67, -262108, 262144, 67, -262107, 327680, 67, -262106, 393216, 67, -196570, 393216, 69, -131034, 393216, 70, -65498, 393216, 71, -196576, 131072, 69, -131040, 131072, 70, -65504, 131072, 71, -196575, 196608, 69, -196574, 262144, 69, -196573, 196608, 69, -196572, 524288, 66, -196571, 589824, 66, -131037, 196608, 69, -131036, 524288, 67, -131035, 589824, 67, -65501, 196608, 69, -65500, 524288, 68, -65499, 589824, 68, 35, 196608, 69, 36, 262144, 69, 37, 327680, 69, -262113, 65536, 67, -196577, 65536, 68, -131041, 65536, 69, -65505, 65536, 70, -327649, 65536, 66, -131039, 262144, 69, -65503, 262144, 69)
+
+[node name="InteractionArea" parent="." instance=ExtResource("11_ule8e")]
+
+[node name="Node" parent="InteractionArea" instance=ExtResource("12_xfb2p")]
+next_scene_path = "res://scenes/underwater/waking_up_[underwater].tscn"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="InteractionArea"]
+position = Vector2(-40, -80)
+shape = SubResource("CapsuleShape2D_hocud")
 
 [connection signal="child_entered_tree" from="." to="Player" method="_on_game_child_entered_tree"]
